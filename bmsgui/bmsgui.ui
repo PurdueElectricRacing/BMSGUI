@@ -42,18 +42,42 @@
      <height>38</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuConnect">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Tab</string>
+     <string>File</string>
     </property>
-    <addaction name="actionConnect"/>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionClose"/>
    </widget>
-   <addaction name="menuConnect"/>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionPreferences"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuSettings"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionConnect">
+  <action name="actionNew">
    <property name="text">
-    <string>Connect</string>
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences</string>
    </property>
   </action>
  </widget>
