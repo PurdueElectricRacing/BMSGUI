@@ -70,8 +70,11 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
     
     def tableCANcom(self, msg, *args, **kwargs):
         #echoclient
+        query = QtSql.QSqlQuery()
+        query.exec_("insert into candata values('" + msg[0] + "', '" + msg[1] + "', '" + msg[2] + "', '" + msg[3] + "', '" + msg[4] + "', '" + msg[5] + "', '" + msg[6] + "', '" + msg[7] + "', '" + msg[8] + "')")
+        print query.lastQuery()
         id = msg[1]
-        data = msg[2:] + msg[0]
+        data = msg[2:] + [msg[0]]
         if id in headerCANv:
             row = headerCANv.index(id)
             colCount = self.modelCAN.columnCount()
@@ -80,13 +83,14 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def tableCANall(self, *args, **kwargs):
         query = QtSql.QSqlQuery()
-        result = QtSql.QSqlResult()
         colCount = self.modelCAN.columnCount()
         for id in headerCANv:
             row = headerCANv.index(id)
-            #query
+            query.exec_("select b0, b1, b2, b3, b4, b5, b6, b7, date from candata where id = '" + id + "' order by date desc")
+            print query.lastQuery()
+            query.first()
             for col in range(colCount):
-                self.modelCAN.setItem(row, col, QtGui.QStandardItem(data[col]))
+                self.modelCAN.setItem(row, col, QtGui.QStandardItem(str(query.value(col).toString())))
 
     def new(self, *args, **kwargs):
         text, ok = QtGui.QInputDialog.getText(self, 'New Database File', 'Enter Database Name:')
@@ -106,14 +110,14 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 query.exec_("create table candata(date text primary key, id text, b0 text, b1 text, b2 text, b3 text, b4 text, b5 text, b6 text, b7 text)")
                 print query.lastQuery()
                 for id in headerCANv:
-                    query.exec_("insert into candata values('1776-07-04 00:00:0" + str(headerCANv.index(id)) + "', '" + id+ "', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00')")
+                    query.exec_("insert into candata values('1776-07-04 00:00:00" + str(headerCANv.index(id)) + "', '" + id+ "', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00')")
                     print query.lastQuery()
             else:
                 QtGui.QMessageBox.critical(None, QtGui.qApp.tr("Cannot create database"), QtGui.qApp.tr(errorDBexist), QtGui.QMessageBox.Cancel)
     
     def open(self, *args, **kwargs):
         self.dbname = str(QtGui.QFileDialog.getOpenFileName(self, 'Open file', 'c:\\', "Database files (*.db)"))
-        if self.dbname is not None:
+        if self.dbname is not '':
             self.dbname = path.basename(self.dbname)[:-3]
             if self.db is not None:
                 self.db.close()
@@ -124,8 +128,10 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 QtGui.QMessageBox.critical(None, QtGui.qApp.tr("Cannot open database"), QtGui.qApp.tr(errorDBopen), QtGui.QMessageBox.Cancel)
                 return
             self.connectdb = True
-            #self.connect()
-        #self.tableCANcom(['0x0202', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', 'today'])
+            print self.dbname
+            self.tableCANall()
+            self.connect()
+            #2019-01-30 17:19:00, 0x0202, 10, 11, 12, 13, 14, 15, 16, 17
     
     def close(self, *args, **kwargs):
         if self.db is not None:
@@ -151,7 +157,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                     data = conn.recv(1024)
                     if data:
                         print data
-                        self.tableCANcom(data.split())
+                        self.tableCANcom(data.split(', '))
                     conn.sendall(data)
                     if data:
                         return
