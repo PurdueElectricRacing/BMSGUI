@@ -4,3 +4,4 @@ bmsgui.sln
 bmsgui/.vs/bmsgui/v15/.suo
 *.pyc
 *.pyproj
+*.db
