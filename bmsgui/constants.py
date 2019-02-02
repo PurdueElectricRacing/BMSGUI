@@ -4,6 +4,8 @@ headerTemph = ['Temperature (\xb0C)', 'Date']
 headerTempv = ['Site 0', 'Site 1', 'Site 2']
 headerCANh = ['Byte0', 'Byte1', 'Byte2', 'Byte3', 'Byte4', 'Byte5', 'Byte6', 'Byte7', 'Date']
 headerCANv = ['0x0202', '0x00A0', '0x00A1', '0x00A2']
+labelStates = ['State: disconnect', 'State: idle', 'State: log', 'State: live']
+ignoreDec = ['update']
 
 errorDBopen = """Unable to establish a database connection.\n
                 This example needs SQLite support. 
@@ -12,12 +14,20 @@ errorDBopen = """Unable to establish a database connection.\n
 errorDBexist = """Database already exists"""
 
 portNumber = 1090
+DISCONNECT = 0
+IDLE = 1
+LOG = 2
+LIVE = 3
+
 
 def dec(func):
     def wrapper(*args):
-        print "0 - " + func.__name__
-        func(*args)
-        print "1 - " + func.__name__
+        if (func.__name__ not in ignoreDec) and (func.__name__[0] != '_'):
+            print "0 - " + func.__name__
+            func(*args)
+            print "1 - " + func.__name__
+        else:
+            func(*args)
     return wrapper
 
 def fdec(d):
