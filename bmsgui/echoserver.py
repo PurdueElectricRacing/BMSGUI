@@ -12,6 +12,8 @@ def server():
             print 'Connected by', addr
             while True:
                 data = conn.recv(1024)
+                if data == 'END':
+                    break
                 if data:
                     print data
                 conn.sendall(data)

@@ -1,3 +1,4 @@
+import datetime
 import design
 import socket
 import sys
@@ -7,18 +8,19 @@ from os import path
 from PyQt4 import QtCore, QtGui, QtSql
 
 state = DISCONNECT
-db = None
 queue = []
 
 @fdec(dec)
 class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def __init__(self, *args, **kwargs):
-        global state, db
+        global state
         QtGui.QMainWindow.__init__(self)
         design.Ui_MainWindow.__init__(self)
         self.setupUi(self)
         self.connectdb = False
         self.dbname = ''
+        self.db = None
+        self.logname = ''
         self.labelState.setText(labelStates[state])
 
         self.tableCellinit()
@@ -119,19 +121,19 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 self.modelCAN.setItem(row, col, QtGui.QStandardItem(str(query.value(col).toString())))
 
     def new(self, *args, **kwargs):
-        global db, state
+        global state
         text, ok = QtGui.QInputDialog.getText(self, 'New Database File', 'Enter Database Name:')
         if ok:
             if not path.exists(text + '.db'):
-                if db is not None:
-                    db.close()
-                db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
+                if self.db is not None:
+                    self.db.close()
+                self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
                 self.dbname = text
-                db.setDatabaseName(self.dbname + '.db')
+                self.db.setDatabaseName(self.dbname + '.db')
                 print self.dbname
-                if not db.open():
+                if not self.db.open():
                     QtGui.QMessageBox.critical(None, QtGui.qApp.tr("Cannot open database"), QtGui.qApp.tr(errorDBopen), QtGui.QMessageBox.Cancel)
-                    db = None
+                    self.db = None
                     return
 
                 self.connectdb = True
@@ -153,19 +155,20 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 QtGui.QMessageBox.critical(None, QtGui.qApp.tr("Cannot create database"), QtGui.qApp.tr(errorDBexist), QtGui.QMessageBox.Cancel)
     
     def open(self, *args, **kwargs):
-        global db, state
+        global state
         self.dbname = str(QtGui.QFileDialog.getOpenFileName(self, 'Open file', 'c:\\', "Database files (*.db)"))
         if self.dbname is not '':
             self.dbname = path.basename(self.dbname)[:-3]
-            if db is not None:
-                db.close()
-            db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-            db.setDatabaseName(self.dbname + '.db')
+            if self.db is not None:
+                self.db.close()
+            self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
+            self.db.setDatabaseName(self.dbname + '.db')
             print self.dbname
-            if not db.open():
+            if not self.db.open():
                 QtGui.QMessageBox.critical(None, QtGui.qApp.tr("Cannot open database"), QtGui.qApp.tr(errorDBopen), QtGui.QMessageBox.Cancel)
-                db = None
+                self.db = None
                 return
+            self.tableCANall()
 
             self.connectdb = True
             state = IDLE
@@ -177,10 +180,10 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             self.pushButtonStop.setEnabled(not self.connectdb)
     
     def close(self, *args, **kwargs):
-        global db, state
-        if db is not None:
-            db.close()
-        db = None
+        global state
+        if self.db is not None:
+            self.db.close()
+        self.db = None
         self.connectdb = False
         state = DISCONNECT
         self.dbname = ''
@@ -192,16 +195,22 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.actionClose.setEnabled(self.connectdb)
 
     def log(self, *args, **kwargs):
+        global state, queue
         #write
-        #read
-        pass
+        state = LOG
+        self.logname = + datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + '_bms.log'
+        self.labelState.setText(labelStates[state])
+        self.pushButtonLog.setEnabled(not self.connectdb)
+        self.pushButtonDel.setEnabled(not self.connectdb)
+        self.pushButtonLive.setEnabled(not self.connectdb)
+        self.pushButtonStop.setEnabled(not self.connectdb)
 
     def delete(self, *args, **kwargs):
         #write
         pass
 
     def live(self, *args, **kwargs):
-        global state
+        global state, queue
         #write
         state = LIVE
         self.labelState.setText(labelStates[state])
@@ -222,7 +231,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButtonStop.setEnabled(not self.connectdb)
 
     def update(self, *args, **kwargs):
-        global db, state, queue
+        global state, queue
+        print queue
         if (state == LIVE) and (len(queue) > 0):
             query = QtSql.QSqlQuery()
             temp = queue
@@ -243,6 +253,22 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 query.exec_()
                 print "insert into candata", msg
             self.tableCANall()
+        elif (state == LOG) and (len(queue) > 0):
+            temp = queue
+            queue = []
+            with open(self.logname, 'a') as f:
+                for entry in temp:
+                    if entry == 'END':
+                        state = IDLE
+                        self.labelState.setText(labelStates[state])
+                        self.pushButtonLog.setEnabled(self.connectdb)
+                        self.pushButtonDel.setEnabled(self.connectdb)
+                        self.pushButtonLive.setEnabled(self.connectdb)
+                        self.pushButtonStop.setEnabled(not self.connectdb)
+                        break
+                    else:
+                        f.write(entry)
+            
 
     def write(self, *args, **kwargs):
         HOST = socket.gethostname()
@@ -256,8 +282,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 print repr(data)
 
     def closeEvent(self, event, *args, **kwargs):
-        if db is not None:
-            db.close()
+        if self.db is not None:
+            self.db.close()
         self.threadRead.exit()
         sys.exit(0)
 
@@ -283,6 +309,8 @@ class MyThreadRead(QtCore.QThread):
                         if data:
                             print 'MyThreadRead:', data
                             if state == LIVE:
+                                queue.append(data)
+                            if state == LOG:
                                 queue.append(data)
                         conn.sendall(data)
 
