@@ -1,5 +1,6 @@
 import datetime
 import design
+import serial
 import socket
 import sys
 from constants import *
@@ -35,7 +36,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.actionQuit.triggered.connect(self.closeEvent)
         #self.actionPreferences.triggered.connect()
 
-        self.pushButtonLog.clicked.connect(self.p)
+        self.pushButtonLog.clicked.connect(self.log)
         self.pushButtonLog.setEnabled(self.connectdb)
         self.pushButtonDel.clicked.connect(self.p)
         self.pushButtonDel.setEnabled(self.connectdb)
@@ -198,7 +199,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         global state, queue
         #write
         state = LOG
-        self.logname = + datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + '_bms.log'
+        self.logname = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + '_bms.log'
         self.labelState.setText(labelStates[state])
         self.pushButtonLog.setEnabled(not self.connectdb)
         self.pushButtonDel.setEnabled(not self.connectdb)
@@ -232,7 +233,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def update(self, *args, **kwargs):
         global state, queue
-        print queue
         if (state == LIVE) and (len(queue) > 0):
             query = QtSql.QSqlQuery()
             temp = queue
@@ -268,7 +268,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         break
                     else:
                         f.write(entry)
-            
 
     def write(self, *args, **kwargs):
         HOST = socket.gethostname()
