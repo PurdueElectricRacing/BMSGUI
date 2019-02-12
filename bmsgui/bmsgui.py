@@ -3,6 +3,8 @@ import design
 import serial
 import socket
 import sys
+import threading
+import time
 from constants import *
 from contextlib import closing
 from os import path
@@ -19,37 +21,36 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         design.Ui_MainWindow.__init__(self)
         self.setupUi(self)
         self.connectdb = False
-        self.dbname = ''
+        self.dbname = 'bmsdata.db'
         self.db = None
         self.logname = ''
         self.labelState.setText(labelStates[state])
+        self.pushButtonLog.setEnabled(self.connectdb)
+        self.pushButtonDel.setEnabled(self.connectdb)
+        self.pushButtonLive.setEnabled(self.connectdb)
+        self.pushButtonStop.setEnabled(self.connectdb)
 
         self.tableCellinit()
         self.tableTempinit()
         self.tableModinit()
         self.tableCANinit()
+        self.DBinit()
 
-        self.actionNew.triggered.connect(self.new)
-        self.actionOpen.triggered.connect(self.open)
-        self.actionClose.triggered.connect(self.close)
-        self.actionClose.setEnabled(self.connectdb)
         self.actionQuit.triggered.connect(self.closeEvent)
         self.actionPreferences.triggered.connect(self.p)
 
         self.pushButtonLog.clicked.connect(self.log)
-        self.pushButtonLog.setEnabled(self.connectdb)
         self.pushButtonDel.clicked.connect(self.delete)
-        self.pushButtonDel.setEnabled(self.connectdb)
         self.pushButtonLive.clicked.connect(self.live)
-        self.pushButtonLive.setEnabled(self.connectdb)
         self.pushButtonStop.clicked.connect(self.stop)
-        self.pushButtonStop.setEnabled(self.connectdb)
-
-        self.threadRead = MyThreadRead()
-        self.threadRead.start()
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.update)
-        self.timer.start(1000)
+        
+        #self.threadCAN = MyThreadCAN()
+        #self.threadCAN.start()
+        #self.timer = QtCore.QTimer()
+        #self.timer.timeout.connect(self.update)
+        #self.timer.start(1000)
+        self.threadCAN = threading.Thread(target=self.threadCANrun)
+        self.threadCAN.start()
 
     def p(self, *args, **kwargs):
         pass
@@ -60,7 +61,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.modelCell.setVerticalHeaderLabels(headerCellv)
         rowCount, colCount = self.modelCell.rowCount(), self.modelCell.columnCount()
         for row in range(rowCount):
-            for col in range(colCount -1):
+            for col in range(colCount - 1):
                 self.modelCell.setItem(row, col, QtGui.QStandardItem('-'))
             self.modelCell.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS'))
         self.tableCell.setModel(self.modelCell)
@@ -73,7 +74,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.modelTemp.setVerticalHeaderLabels(headerTempv)
         rowCount, colCount = self.modelTemp.rowCount(), self.modelTemp.columnCount()
         for row in range(rowCount):
-            for col in range(colCount -1):
+            for col in range(colCount - 1):
                 self.modelTemp.setItem(row, col, QtGui.QStandardItem('-'))
             self.modelTemp.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS'))
         self.tableTemp.setModel(self.modelTemp)
@@ -90,7 +91,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.modelCAN.setVerticalHeaderLabels(headerCANv)
         rowCount, colCount = self.modelCAN.rowCount(), self.modelCAN.columnCount()
         for row in range(rowCount):
-            for col in range(colCount -1):
+            for col in range(colCount - 1):
                 self.modelCAN.setItem(row, col, QtGui.QStandardItem('0xXX'))
             self.modelCAN.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS'))
         self.tableCAN.setModel(self.modelCAN)
@@ -121,79 +122,25 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             for col in range(colCount):
                 self.modelCAN.setItem(row, col, QtGui.QStandardItem(str(query.value(col).toString())))
 
-    def new(self, *args, **kwargs):
-        global state
-        text, ok = QtGui.QInputDialog.getText(self, 'New Database File', 'Enter Database Name:')
-        if ok:
-            if not path.exists(text + '.db'):
-                if self.db is not None:
-                    self.db.close()
-                self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-                self.dbname = text
-                self.db.setDatabaseName(self.dbname + '.db')
-                print self.dbname
-                if not self.db.open():
-                    QtGui.QMessageBox.critical(None, QtGui.qApp.tr("Cannot open database"), QtGui.qApp.tr(errorDBopen), QtGui.QMessageBox.Cancel)
-                    self.db = None
-                    return
-
-                self.connectdb = True
-                state = IDLE
-                self.actionClose.setEnabled(self.connectdb)
-                self.labelState.setText(labelStates[state])
-                self.pushButtonLog.setEnabled(self.connectdb)
-                self.pushButtonDel.setEnabled(self.connectdb)
-                self.pushButtonLive.setEnabled(self.connectdb)
-                self.pushButtonStop.setEnabled(not self.connectdb)
-
-                query = QtSql.QSqlQuery()
-                query.exec_("create table candata(date text primary key, id text, b0 text, b1 text, b2 text, b3 text, b4 text, b5 text, b6 text, b7 text)")
-                print query.lastQuery()
-                for id in headerCANv:
-                    query.exec_("insert into candata values('1776-07-04 00:00:00" + str(headerCANv.index(id)) + "', '" + id+ "', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00')")
-                    print query.lastQuery()
-            else:
-                QtGui.QMessageBox.critical(None, QtGui.qApp.tr("Cannot create database"), QtGui.qApp.tr(errorDBexist), QtGui.QMessageBox.Cancel)
-    
-    def open(self, *args, **kwargs):
-        global state
-        self.dbname = str(QtGui.QFileDialog.getOpenFileName(self, 'Open file', 'c:\\', "Database files (*.db)"))
-        if self.dbname is not '':
-            self.dbname = path.basename(self.dbname)[:-3]
-            if self.db is not None:
-                self.db.close()
-            self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
-            self.db.setDatabaseName(self.dbname + '.db')
-            print self.dbname
-            if not self.db.open():
-                QtGui.QMessageBox.critical(None, QtGui.qApp.tr("Cannot open database"), QtGui.qApp.tr(errorDBopen), QtGui.QMessageBox.Cancel)
-                self.db = None
-                return
-            self.tableCANall()
-
-            self.connectdb = True
-            state = IDLE
-            self.actionClose.setEnabled(self.connectdb)
-            self.labelState.setText(labelStates[state])
-            self.pushButtonLog.setEnabled(self.connectdb)
-            self.pushButtonDel.setEnabled(self.connectdb)
-            self.pushButtonLive.setEnabled(self.connectdb)
-            self.pushButtonStop.setEnabled(not self.connectdb)
-    
-    def close(self, *args, **kwargs):
-        global state
+    def DBinit(self, *args, **kwargs):
         if self.db is not None:
             self.db.close()
-        self.db = None
-        self.connectdb = False
-        state = DISCONNECT
-        self.dbname = ''
-        self.tableCellinit()
-        self.tableTempinit()
-        self.tableModinit()
-        self.tableCANinit()
+        self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
+        self.db.setDatabaseName(self.dbname)
+        print self.dbname
+        if not self.db.open():
+            QtGui.QMessageBox.critical(None, QtGui.qApp.tr("Cannot open database"), QtGui.qApp.tr(errorDBopen), QtGui.QMessageBox.Cancel)
+            self.db = None
+            return
+        self.tableCANall()
+
+        self.connectdb = True
+        state = IDLE
         self.labelState.setText(labelStates[state])
-        self.actionClose.setEnabled(self.connectdb)
+        self.pushButtonLog.setEnabled(self.connectdb)
+        self.pushButtonDel.setEnabled(self.connectdb)
+        self.pushButtonLive.setEnabled(self.connectdb)
+        self.pushButtonStop.setEnabled(not self.connectdb)
 
     def log(self, *args, **kwargs):
         global state, queue
@@ -269,75 +216,59 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                     else:
                         f.write(entry)
 
-    def write(self, *args, **kwargs):
-        HOST = socket.gethostname()
-        PORT = portNumber
-        with closing(socket.socket()) as s:
-            s.connect((self.HOST, self.PORT))
-            while True:
-                i = raw_input("Message: ")
-                s.sendall(i)
-                data = s.recv(1024)
-                print repr(data)
+    def threadCANrun(self, *args, **kwargs):
+        global state
+        i = 0
+        while(1):
+            if state == CLOSE:
+                return
+            print i
+            i += 1
+            time.sleep(1)
 
     def closeEvent(self, event, *args, **kwargs):
+        global state
+        state = CLOSE
         if self.db is not None:
             self.db.close()
-        self.threadRead.exit()
+        time.sleep(0.5)
         sys.exit(0)
 
-@fdec(dec)
-class MyThreadRead(QtCore.QThread):
-    def __init__(self, *args, **kwargs):
-        return super(MyThreadRead, self).__init__(*args)
+#@fdec(dec)
+#class MyThreadCAN(QtCore.QThread):
+#    def __init__(self, *args, **kwargs):
+#        return super(MyThreadCAN, self).__init__(*args)
 
-    def run(self, *args, **kwargs):
-        global state, queue
-        ser = serial.Serial('COM3', baudrate=5000000, timeout=None)
-        #ser.open()
-        print(ser.write('S6\r'))    # CAN Baudrate set to 500k
-        print(ser.write('O\r'))     # Open CANdapter
-        print 0
-        print(ser.write('T352411223344\r'))
-        print 1
-        while(1):
-            in_wait = ser.in_waiting
-            if(in_wait > 0):
-                try:
-                    # Message format
-                    # tIIILDDDDDDDDTTTT
-                    # III = CAN ID
-                    # L = Message Length
-                    # D = Message data
-                    # T = Timestamp
+#    def run(self, *args, **kwargs):
+#        global state, queue
+#        while(1):
+#            ser = serial.Serial('COM3', baudrate=5000000, timeout=None)
+#            ser.write('S6\r')   # CAN Baudrate set to 500k
+#            ser.write('O\r')    # Open CANdapter
+#            #print(ser.write('T352411223344\r'))
+#            while(1):
+#                in_wait = ser.in_waiting
+#                if(in_wait > 0):
+#                    try:
+#                        # Message format
+#                        # tIIILDDDDDDDDTTTT
+#                        # III = CAN ID
+#                        # L = Message Length
+#                        # D = Message data
+#                        # T = Timestamp
 
-                    message = ser.read_until('\r').replace('\r', '')[1:]
-                    m_id = message[0:3]
-                    m_len = message[3:4]
-                    m_message = message[4:]
-                    m_time_stamp = str(datetime.datetime.now())
-                    print("id: " + m_id + "\t\tlen: " + m_len + "\t\ttime_stamp: " + m_time_stamp + "\tmsg: " + m_message)
-                except (serial.serialutil.SerialException):
-                    print(str(in_wait) + " !!!!")
-        while(1):
-            with closing(socket.socket()) as s:
-                s.bind((socket.gethostname(), portNumber))
-                s.listen(5)
-                conn, addr = s.accept()
-                with closing(conn):
-                    print 'MyThreadRead connected by', addr
-                    while True:
-                        data = conn.recv(1024)
-                        if len(data) == 0:
-                            print 'MyThreadRead disconnected'
-                            break
-                        if data:
-                            print 'MyThreadRead:', data
-                            if state == LIVE:
-                                queue.append(data)
-                            if state == LOG:
-                                queue.append(data)
-                        conn.sendall(data)
+#                        message = ser.read_until('\r').replace('\r', '')[1:]
+#                        m_id = message[0:3]
+#                        m_len = message[3:4]
+#                        m_message = message[4:]
+#                        m_time_stamp = str(datetime.datetime.now())
+#                        if state == LIVE:
+#                            queue.append(data)
+#                        if state == LOG:
+#                            queue.append(data)
+#                        print("id: " + m_id + "\t\tlen: " + m_len + "\t\ttime_stamp: " + m_time_stamp + "\tmsg: " + m_message)
+#                    except (serial.serialutil.SerialException):
+#                        print(str(in_wait) + " !!!!")
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

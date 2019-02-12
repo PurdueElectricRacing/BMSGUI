@@ -18,7 +18,7 @@ DISCONNECT = 0
 IDLE = 1
 LOG = 2
 LIVE = 3
-
+CLOSE = -1
 
 def dec(func):
     def wrapper(*args):
