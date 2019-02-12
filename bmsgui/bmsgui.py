@@ -34,11 +34,11 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.actionClose.triggered.connect(self.close)
         self.actionClose.setEnabled(self.connectdb)
         self.actionQuit.triggered.connect(self.closeEvent)
-        #self.actionPreferences.triggered.connect()
+        self.actionPreferences.triggered.connect(self.p)
 
         self.pushButtonLog.clicked.connect(self.log)
         self.pushButtonLog.setEnabled(self.connectdb)
-        self.pushButtonDel.clicked.connect(self.p)
+        self.pushButtonDel.clicked.connect(self.delete)
         self.pushButtonDel.setEnabled(self.connectdb)
         self.pushButtonLive.clicked.connect(self.live)
         self.pushButtonLive.setEnabled(self.connectdb)
@@ -293,6 +293,32 @@ class MyThreadRead(QtCore.QThread):
 
     def run(self, *args, **kwargs):
         global state, queue
+        ser = serial.Serial('COM3', baudrate=5000000, timeout=None)
+        #ser.open()
+        print(ser.write('S6\r'))    # CAN Baudrate set to 500k
+        print(ser.write('O\r'))     # Open CANdapter
+        print 0
+        print(ser.write('T352411223344\r'))
+        print 1
+        while(1):
+            in_wait = ser.in_waiting
+            if(in_wait > 0):
+                try:
+                    # Message format
+                    # tIIILDDDDDDDDTTTT
+                    # III = CAN ID
+                    # L = Message Length
+                    # D = Message data
+                    # T = Timestamp
+
+                    message = ser.read_until('\r').replace('\r', '')[1:]
+                    m_id = message[0:3]
+                    m_len = message[3:4]
+                    m_message = message[4:]
+                    m_time_stamp = str(datetime.datetime.now())
+                    print("id: " + m_id + "\t\tlen: " + m_len + "\t\ttime_stamp: " + m_time_stamp + "\tmsg: " + m_message)
+                except (serial.serialutil.SerialException):
+                    print(str(in_wait) + " !!!!")
         while(1):
             with closing(socket.socket()) as s:
                 s.bind((socket.gethostname(), portNumber))
