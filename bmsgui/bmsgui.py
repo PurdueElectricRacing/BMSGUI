@@ -140,6 +140,10 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             query = QtSql.QSqlQuery()
             query.exec_("create table candata(date text primary key, id text, len text, b0 text, b1 text, b2 text, b3 text, b4 text, b5 text, b6 text, b7 text)")
             print query.lastQuery()
+            query.exec_("create table voltage(date text primary key, id text, v text, mohm text)")
+            print query.lastQuery()
+            query.exec_("create table temperature(date text primary key, id text, c text)")
+            print query.lastQuery()
             for id in headerCANv:
                 query.exec_("insert into candata values('1776-07-04 00:00:0" + str(headerCANv.index(id)) + ".000000', '" + id+ "', '0', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00')")
                 print query.lastQuery()
@@ -215,6 +219,14 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 query.addBindValue(msg[9])
                 query.exec_()
                 print "insert into candata", msg
+                # voltage
+                if m_id == headerCANv[0]:
+                    f = 0
+                    b0 = int(msg[2], 0)
+                    b1 = int(msg[3], 0)
+                    c = b0 * cellsPERslave + b1 * 3
+                    # for loop to do
+
             self.tableCellall()
             self.tableTempall()
             self.tableCANall()
@@ -299,5 +311,4 @@ if __name__ == "__main__":
     window = MyApp()
     window.show()
     sys.exit(app.exec_())
-    #2019-02-02 16:34:00, 0x0202, 19, 11, 12, 13, 14, 15, 16, 17
-    #insert into candata values('2019-02-12 17:06:00', '0x202', '8', '9', '2', '3', '4', '5', '6', '7', '8');
+    #insert into candata values('2019-02-12 17:06:00.000000', '0x605', '8', '9', '2', '3', '4', '5', '6', '7', '8');

@@ -4,6 +4,7 @@ headerTemph = ['Temperature (\xb0C)', 'Date']
 headerTempv = 4     # number of total thermistors
 headerCANh = ['Length', 'Byte0', 'Byte1', 'Byte2', 'Byte3', 'Byte4', 'Byte5', 'Byte6', 'Byte7', 'Date']
 headerCANv = ['0x605', '0x606', '0x607']   # CAN data to display on GUI
+# volt, temp, error
 labelStates = ['State: disconnect', 'State: idle', 'State: log', 'State: live']
 ignoreDec = ['update']
 
@@ -13,7 +14,8 @@ errorDBopen = """Unable to establish a database connection.\n
                 Click Cancel to exit."""
 errorDBexist = """Database already exists"""
 
-portNumber = 1090
+slaveNum = 2
+cellsPERslave = 6
 DISCONNECT = 0
 IDLE = 1
 LOG = 2
