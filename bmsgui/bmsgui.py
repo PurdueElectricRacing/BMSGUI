@@ -76,7 +76,10 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def tableTempinit(self, *args, **kwargs):
         self.modelTemp = QtGui.QStandardItemModel()
         self.modelTemp.setHorizontalHeaderLabels(headerTemph)
-        self.modelTemp.setVerticalHeaderLabels(headerTempv)
+        tempv = []
+        for i in range(headerTempv):
+            tempv.append('Site ' + '%02d' % (i,))
+        self.modelTemp.setVerticalHeaderLabels(tempv)
         rowCount, colCount = self.modelTemp.rowCount(), self.modelTemp.columnCount()
         for row in range(rowCount):
             for col in range(colCount - 1):
