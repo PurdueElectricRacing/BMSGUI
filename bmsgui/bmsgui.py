@@ -45,13 +45,11 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButtonLive.clicked.connect(self.live)
         self.pushButtonStop.clicked.connect(self.stop)
         
-        #self.threadCAN = MyThreadCAN()
-        #self.threadCAN.start()
-        #self.timer = QtCore.QTimer()
-        #self.timer.timeout.connect(self.update)
-        #self.timer.start(1000)
         self.threadCAN = threading.Thread(target=self.threadCANrun)
         self.threadCAN.start()
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.update)
+        self.timer.start(1000)
 
     def p(self, *args, **kwargs):
         pass
@@ -59,15 +57,21 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def tableCellinit(self, *args, **kwargs):
         self.modelCell = QtGui.QStandardItemModel()
         self.modelCell.setHorizontalHeaderLabels(headerCellh)
-        self.modelCell.setVerticalHeaderLabels(headerCellv)
+        cellv = []
+        for i in range(headerCellv):
+            cellv.append('Cell ' + '%02d' % (i,))
+        self.modelCell.setVerticalHeaderLabels(cellv)
         rowCount, colCount = self.modelCell.rowCount(), self.modelCell.columnCount()
         for row in range(rowCount):
             for col in range(colCount - 1):
                 self.modelCell.setItem(row, col, QtGui.QStandardItem('-'))
-            self.modelCell.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS'))
+            self.modelCell.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS.MMMMMM'))
         self.tableCell.setModel(self.modelCell)
         self.tableCell.horizontalHeader().setStretchLastSection(True)
         self.tableCell.horizontalHeader().resizeSections(3)
+
+    def tableCellall(self, *args, **kwargs):
+        pass
     
     def tableTempinit(self, *args, **kwargs):
         self.modelTemp = QtGui.QStandardItemModel()
@@ -77,11 +81,14 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         for row in range(rowCount):
             for col in range(colCount - 1):
                 self.modelTemp.setItem(row, col, QtGui.QStandardItem('-'))
-            self.modelTemp.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS'))
+            self.modelTemp.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS.MMMMMM'))
         self.tableTemp.setModel(self.modelTemp)
         self.tableTemp.horizontalHeader().setStretchLastSection(True)
         self.tableTemp.horizontalHeader().resizeSections(3)
     
+    def tableTempall(self, *args, **kwargs):
+        pass
+
     def tableModinit(self, *args, **kwargs):
         #soc soh i
         pass
@@ -97,23 +104,10 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                     self.modelCAN.setItem(row, col, QtGui.QStandardItem('X'))
                 else:
                     self.modelCAN.setItem(row, col, QtGui.QStandardItem('0xXX'))
-            self.modelCAN.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS'))
+            self.modelCAN.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS.MMMMMM'))
         self.tableCAN.setModel(self.modelCAN)
         self.tableCAN.horizontalHeader().setStretchLastSection(True)
         self.tableCAN.horizontalHeader().resizeSections(3)
-    
-    def tableCANcom(self, msg, *args, **kwargs):
-        #echoclient
-        query = QtSql.QSqlQuery()
-        query.exec_("insert into candata values('" + msg[0] + "', '" + msg[1] + "', '" + msg[2] + "', '" + msg[3] + "', '" + msg[4] + "', '" + msg[5] + "', '" + msg[6] + "', '" + msg[7] + "', '" + msg[8] + "')")
-        print query.lastQuery()
-        id = msg[1]
-        data = msg[2:] + [msg[0]]
-        if id in headerCANv:
-            row = headerCANv.index(id)
-            colCount = self.modelCAN.columnCount()
-            for col in range(colCount):
-                self.modelCAN.setItem(row, col, QtGui.QStandardItem(data[col]))
 
     def tableCANall(self, *args, **kwargs):
         query = QtSql.QSqlQuery()
@@ -144,7 +138,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             query.exec_("create table candata(date text primary key, id text, len text, b0 text, b1 text, b2 text, b3 text, b4 text, b5 text, b6 text, b7 text)")
             print query.lastQuery()
             for id in headerCANv:
-                query.exec_("insert into candata values('1776-07-04 00:00:0" + str(headerCANv.index(id)) + "', '" + id+ "', '0', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00')")
+                query.exec_("insert into candata values('1776-07-04 00:00:0" + str(headerCANv.index(id)) + ".000000', '" + id+ "', '0', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00')")
                 print query.lastQuery()
         self.connectdb = True
         
@@ -218,6 +212,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 query.addBindValue(msg[9])
                 query.exec_()
                 print "insert into candata", msg
+            self.tableCellall()
+            self.tableTempall()
             self.tableCANall()
         elif (state == LOG) and (len(queue) > 0):
             temp = queue
@@ -247,8 +243,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 ser = serial.Serial('COM3', baudrate=5000000, timeout=None)
                 ser.write('S6\r')   # CAN Baudrate set to 500k
                 ser.write('O\r')    # Open CANdapter
-                print ser.write('T5013000001\r')
-                #print(ser.write('T352411223344\r'))
                 if (state == DISCONNECT) and self.connectdb:
                     if state == CLOSE:
                         return

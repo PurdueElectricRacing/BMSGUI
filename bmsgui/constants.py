@@ -1,9 +1,9 @@
 headerCellh = ['Voltage (V)', 'Internal Resistance (mOhm)', 'Date']
-headerCellv = ['Cell 00', 'Cell 01', 'Cell 02', 'Cell 03', 'Cell 04', 'Cell 05', 'Cell 06', 'Cell 07', 'Cell 08', 'Cell 09', 'Cell 10', 'Cell 11']
+headerCellv = 12
 headerTemph = ['Temperature (\xb0C)', 'Date']
 headerTempv = ['Site 0', 'Site 1', 'Site 2']
 headerCANh = ['Length', 'Byte0', 'Byte1', 'Byte2', 'Byte3', 'Byte4', 'Byte5', 'Byte6', 'Byte7', 'Date']
-headerCANv = ['0x202', '0x0A0', '0x0A1', '0x0A2']
+headerCANv = ['0x605', '0x606', '0x607', '0x7E0']
 labelStates = ['State: disconnect', 'State: idle', 'State: log', 'State: live']
 ignoreDec = ['update']
 
