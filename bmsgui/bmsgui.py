@@ -12,6 +12,7 @@ from PyQt4 import QtCore, QtGui, QtSql
 
 state = DISCONNECT
 queue = []
+ser = None
 
 @fdec(dec)
 class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
@@ -166,8 +167,10 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         pass
 
     def live(self, *args, **kwargs):
-        global state, queue
+        global state, queue, ser
         #write
+        print ser.write('T6103000001\r')
+        #print ser.write('T4003000001\r')
         state = LIVE
         queue = []
         self.labelState.setText(labelStates[state])
@@ -178,8 +181,9 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableCANall()
 
     def stop(self, *args, **kwargs):
-        global state
+        global state, ser
         #write
+        ser.write('T6103000000\r')
         state = IDLE
         queue = []
         self.labelState.setText(labelStates[state])
@@ -232,7 +236,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         f.write(entry)
 
     def threadCANrun(self, *args, **kwargs):
-        global state
+        global state, ser
         i = 0
         while(1):
             if state == CLOSE:
@@ -243,6 +247,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 ser = serial.Serial('COM3', baudrate=5000000, timeout=None)
                 ser.write('S6\r')   # CAN Baudrate set to 500k
                 ser.write('O\r')    # Open CANdapter
+                print ser.write('T5013000001\r')
                 #print(ser.write('T352411223344\r'))
                 if (state == DISCONNECT) and self.connectdb:
                     if state == CLOSE:

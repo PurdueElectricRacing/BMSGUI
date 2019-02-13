@@ -6,3 +6,4 @@ bmsgui/.vs/bmsgui/v15/.suo
 *.pyproj
 *.db
 *.log
+*.opendb
