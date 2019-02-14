@@ -70,7 +70,15 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableCell.horizontalHeader().resizeSections(3)
 
     def tableCellall(self, *args, **kwargs):
-        pass
+        query = QtSql.QSqlQuery()
+        colCount = self.modelCAN.columnCount()
+        for id in range(headerCellv):
+            row = id
+            query.exec_("select v, date from voltage where id = '" + str(id) + "' order by date desc")
+            #print query.lastQuery()
+            query.first()
+            self.modelCell.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
+            self.modelCell.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
     
     def tableTempinit(self, *args, **kwargs):
         self.modelTemp = QtGui.QStandardItemModel()
@@ -117,7 +125,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         for id in headerCANv:
             row = headerCANv.index(id)
             query.exec_("select len, b0, b1, b2, b3, b4, b5, b6, b7, date from candata where id = '" + id[2:] + "' order by date desc")
-            print query.lastQuery()
+            #print query.lastQuery()
             query.first()
             for col in range(colCount):
                 self.modelCAN.setItem(row, col, QtGui.QStandardItem(str(query.value(col).toString())))
@@ -138,14 +146,24 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         if new:
             query = QtSql.QSqlQuery()
             query.exec_("create table candata(date text primary key, id text, len text, b0 text, b1 text, b2 text, b3 text, b4 text, b5 text, b6 text, b7 text)")
-            print query.lastQuery()
-            query.exec_("create table voltage(date text primary key, id text, v text, mohm text)")
-            print query.lastQuery()
+            if PRINT:
+                print query.lastQuery()
+            query.exec_("create table voltage(date text primary key, id text, v text)")
+            if PRINT:
+                print query.lastQuery()
             query.exec_("create table temperature(date text primary key, id text, c text)")
-            print query.lastQuery()
+            if PRINT:
+                print query.lastQuery()
+            query.exec_("create table ocv(date text primary key, id text, v text)")
+            if PRINT:
+                print query.lastQuery()
+            query.exec_("create table ir(date text primary key, id text, mohm text)")
+            if PRINT:
+                print query.lastQuery()
             for id in headerCANv:
                 query.exec_("insert into candata values('1776-07-04 00:00:0" + str(headerCANv.index(id)) + ".000000', '" + id[2:] + "', '0', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00')")
-                print query.lastQuery()
+                if PRINT:
+                    print query.lastQuery()
         self.connectdb = True
         
         self.tableCANall()
@@ -209,28 +227,31 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 query.addBindValue(date)
                 query.addBindValue(m_id)
                 query.addBindValue(m_len)
-                query.addBindValue(msg[0])
-                query.addBindValue(msg[1])
-                query.addBindValue(msg[2])
-                query.addBindValue(msg[3])
-                query.addBindValue(msg[4])
-                query.addBindValue(msg[5])
-                query.addBindValue(msg[6])
-                query.addBindValue(msg[7])
+                query.addBindValue('0x' + msg[0])
+                query.addBindValue('0x' + msg[1])
+                query.addBindValue('0x' + msg[2])
+                query.addBindValue('0x' + msg[3])
+                query.addBindValue('0x' + msg[4])
+                query.addBindValue('0x' + msg[5])
+                query.addBindValue('0x' + msg[6])
+                query.addBindValue('0x' + msg[7])
                 query.exec_()
-                print "insert into candata", entry
+                if PRINT:
+                    print "insert into candata", entry
                 # voltage
                 if m_id == headerCANv[0][2:]:
                     b0 = int('0x' + msg[0], 0)
                     b1 = int('0x' + msg[1], 0)
                     c = b0 * cellsPERslave + b1 * dataPERmsg
                     for f in range(1, 1 + dataPERmsg):
-                        query.prepare("insert into voltage (date, id, v, mohm) values (?, ?, ?, ?)")
-                        query.addBindValue(date[:-1] + str(f))
-                        query.addBindValue(str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0)))
-                        query.addBindValue(str(f))
+                        d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0))]
+                        query.prepare("insert into voltage (date, id, v) values (?, ?, ?)")
+                        query.addBindValue(d[0])
+                        query.addBindValue(d[1])
+                        query.addBindValue(d[2])
                         query.exec_()
-                        print "insert into voltage", entry
+                        if PRINT:
+                            print "insert into voltage", d
             self.tableCellall()
             self.tableTempall()
             self.tableCANall()
@@ -290,9 +311,15 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         except (serial.serialutil.SerialException):
                             print(str(in_wait) + " !!!!")
             except:
-                print i
+                print 'len(queue): ' + str(len(queue))
                 if DEBUG:
-                    queue.append([str(datetime.datetime.now()), '6058' + '%016d' % (random.randint(0, 10000000000000000))])
+                    slaveid = hex(random.randint(0, slaveNum - 1))[2:]
+                    if len(slaveid) == 1:
+                        slaveid = '0' + slaveid
+                    row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
+                    if len(row) == 1:
+                        row = '0' + row
+                    queue.append([str(datetime.datetime.now()), '6058' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
                 i += 1
                 time.sleep(1)
                 if state == CLOSE:

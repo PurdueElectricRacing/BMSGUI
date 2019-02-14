@@ -1,4 +1,4 @@
-headerCellh = ['Voltage (V)', 'Internal Resistance (mOhm)', 'Date']
+headerCellh = ['Voltage (V)', 'Date']
 headerCellv = 12    # number of total cells
 headerTemph = ['Temperature (\xb0C)', 'Date']
 headerTempv = 4     # number of total thermistors
@@ -18,6 +18,7 @@ slaveNum = 2
 cellsPERslave = 6
 dataPERmsg = 3
 DEBUG = 1
+PRINT = 0
 DISCONNECT = 0
 IDLE = 1
 LOG = 2
@@ -27,9 +28,12 @@ CLOSE = -1
 def dec(func):
     def wrapper(*args):
         if (func.__name__ not in ignoreDec) and (func.__name__[0] != '_'):
-            print "0 - " + func.__name__
+            global PRINT
+            if PRINT:
+                print "0 - " + func.__name__
             func(*args)
-            print "1 - " + func.__name__
+            if PRINT:
+                print "1 - " + func.__name__
         else:
             func(*args)
     return wrapper
