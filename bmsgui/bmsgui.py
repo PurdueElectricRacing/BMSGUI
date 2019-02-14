@@ -36,10 +36,11 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableTempinit()
         self.tableModinit()
         self.tableCANinit()
+        #tableOcv
+        #tableOhm
         self.DBinit()
 
         self.actionQuit.triggered.connect(self.closeEvent)
-        self.actionPreferences.triggered.connect(self.p)
 
         self.pushButtonLog.clicked.connect(self.log)
         self.pushButtonDel.clicked.connect(self.delete)
@@ -51,9 +52,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
         self.timer.start(1000)
-
-    def p(self, *args, **kwargs):
-        pass
 
     def tableCellinit(self, *args, **kwargs):
         self.modelCell = QtGui.QStandardItemModel()

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1440</width>
-    <height>1080</height>
+    <width>1600</width>
+    <height>1200</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -90,71 +90,130 @@ background-color: rgb(255, 127, 127);</string>
        </layout>
       </item>
       <item>
-       <widget class="QLabel" name="labelCell">
-        <property name="styleSheet">
-         <string notr="true"/>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="currentIndex">
+         <number>0</number>
         </property>
-        <property name="text">
-         <string>Cell Data</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTableView" name="tableCell">
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="labelTemp">
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>Temperature Data</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTableView" name="tableTemp">
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="labelMod">
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>Module Data</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTableView" name="tableMod">
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="labelCAN">
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>CAN Data</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTableView" name="tableCAN">
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
+        <widget class="QWidget" name="tabLive">
+         <attribute name="title">
+          <string>Live</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLabel" name="labelCell">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Cell Data</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableCell">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTemp">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Temperature Data</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableTemp">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelMod">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Module Data</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableMod">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabCellinfo">
+         <attribute name="title">
+          <string>Cell Info</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <item>
+           <widget class="QLabel" name="labelOcv">
+            <property name="text">
+             <string>Open Circuit Voltage</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableOcv"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelOhm">
+            <property name="text">
+             <string>Internal Resistance</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableOhm"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabCAN">
+         <attribute name="title">
+          <string>CAN</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QLabel" name="labelCAN">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>CAN Data</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableCAN">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabParam">
+         <attribute name="title">
+          <string>Parameters</string>
+         </attribute>
+        </widget>
        </widget>
       </item>
      </layout>
@@ -166,7 +225,7 @@ background-color: rgb(255, 127, 127);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1440</width>
+     <width>1600</width>
      <height>38</height>
     </rect>
    </property>
@@ -185,14 +244,7 @@ background-color: rgb(255, 127, 127);</string>
     </property>
     <addaction name="actionQuit"/>
    </widget>
-   <widget class="QMenu" name="menuSettings">
-    <property name="title">
-     <string>Settings</string>
-    </property>
-    <addaction name="actionPreferences"/>
-   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuSettings"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
