@@ -1,5 +1,6 @@
 import datetime
 import design
+import random
 import serial
 import socket
 import sys
@@ -93,7 +94,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         pass
 
     def tableModinit(self, *args, **kwargs):
-        #soc soh i
+        #soc soh i with live /ocv mohm seperate
         pass
 
     def tableCANinit(self, *args, **kwargs):
@@ -117,7 +118,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         colCount = self.modelCAN.columnCount()
         for id in headerCANv:
             row = headerCANv.index(id)
-            query.exec_("select len, b0, b1, b2, b3, b4, b5, b6, b7, date from candata where id = '" + id + "' order by date desc")
+            query.exec_("select len, b0, b1, b2, b3, b4, b5, b6, b7, date from candata where id = '" + id[2:] + "' order by date desc")
             print query.lastQuery()
             query.first()
             for col in range(colCount):
@@ -145,7 +146,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             query.exec_("create table temperature(date text primary key, id text, c text)")
             print query.lastQuery()
             for id in headerCANv:
-                query.exec_("insert into candata values('1776-07-04 00:00:0" + str(headerCANv.index(id)) + ".000000', '" + id+ "', '0', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00')")
+                query.exec_("insert into candata values('1776-07-04 00:00:0" + str(headerCANv.index(id)) + ".000000', '" + id[2:] + "', '0', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00')")
                 print query.lastQuery()
         self.connectdb = True
         
@@ -195,19 +196,22 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def update(self, *args, **kwargs):
         global state, queue
-        if (state == LIVE) and (len(queue) > 0):
+        if ((state == LIVE) or DEBUG) and (len(queue) > 0):
             query = QtSql.QSqlQuery()
             temp = queue
             queue = []
             for entry in temp:
                 date = entry[0]
                 msg = entry[1]
-                m_id = message[0:3]
-                m_len = message[3:4]
-                m_message = message[4:]
-                msg = entry.split(', ')
-                query.prepare("insert into candata (date, id, b0, b1, b2, b3, b4, b5, b6, b7) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+                m_id = msg[0:3]
+                m_len = msg[3:4]
+                m_message = msg[4:]
+                msg = [m_message[i:i+2] for i in range(0, len(m_message), 2)]
+                query.prepare("insert into candata (date, id, len, b0, b1, b2, b3, b4, b5, b6, b7) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
                 query.addBindValue(date)
+                query.addBindValue(m_id)
+                query.addBindValue(m_len)
+                query.addBindValue(msg[0])
                 query.addBindValue(msg[1])
                 query.addBindValue(msg[2])
                 query.addBindValue(msg[3])
@@ -215,18 +219,20 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 query.addBindValue(msg[5])
                 query.addBindValue(msg[6])
                 query.addBindValue(msg[7])
-                query.addBindValue(msg[8])
-                query.addBindValue(msg[9])
                 query.exec_()
-                print "insert into candata", msg
+                print "insert into candata", entry
                 # voltage
-                if m_id == headerCANv[0]:
-                    f = 0
-                    b0 = int(msg[2], 0)
-                    b1 = int(msg[3], 0)
-                    c = b0 * cellsPERslave + b1 * 3
-                    # for loop to do
-
+                if m_id == headerCANv[0][2:]:
+                    b0 = int('0x' + msg[0], 0)
+                    b1 = int('0x' + msg[1], 0)
+                    c = b0 * cellsPERslave + b1 * dataPERmsg
+                    for f in range(1, 1 + dataPERmsg):
+                        query.prepare("insert into voltage (date, id, v, mohm) values (?, ?, ?, ?)")
+                        query.addBindValue(date[:-1] + str(f))
+                        query.addBindValue(str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0)))
+                        query.addBindValue(str(f))
+                        query.exec_()
+                        print "insert into voltage", entry
             self.tableCellall()
             self.tableTempall()
             self.tableCANall()
@@ -247,7 +253,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         f.write(entry)
 
     def threadCANrun(self, *args, **kwargs):
-        global state, ser
+        global state, ser, queue
         i = 0
         while(1):
             if state == CLOSE:
@@ -287,6 +293,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                             print(str(in_wait) + " !!!!")
             except:
                 print i
+                if DEBUG:
+                    queue.append([str(datetime.datetime.now()), '6058' + '%016d' % (random.randint(0, 10000000000000000))])
                 i += 1
                 time.sleep(1)
                 if state == CLOSE:

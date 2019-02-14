@@ -16,6 +16,8 @@ errorDBexist = """Database already exists"""
 
 slaveNum = 2
 cellsPERslave = 6
+dataPERmsg = 3
+DEBUG = 1
 DISCONNECT = 0
 IDLE = 1
 LOG = 2
