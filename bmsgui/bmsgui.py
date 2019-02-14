@@ -97,7 +97,15 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableTemp.horizontalHeader().resizeSections(3)
     
     def tableTempall(self, *args, **kwargs):
-        pass
+        query = QtSql.QSqlQuery()
+        colCount = self.modelTemp.columnCount()
+        for id in range(headerTempv):
+            row = id
+            query.exec_("select c, date from temperature where id = '" + str(id) + "' order by date desc")
+            #print query.lastQuery()
+            query.first()
+            self.modelTemp.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
+            self.modelTemp.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
 
     def tableModinit(self, *args, **kwargs):
         #soc soh i with live /ocv mohm seperate
@@ -253,19 +261,19 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         if PRINT:
                             print "insert into voltage", d
                 # temp
-                #if m_id == headerCANv[1][2:]:
-                #    b0 = int('0x' + msg[0], 0)
-                #    b1 = int('0x' + msg[1], 0)
-                #    c = b0 * (headerTempv / slaveNum) + b1
-                #    for f in range(1, 1 + dataPERmsg):
-                #        d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0))]
-                #        query.prepare("insert into voltage (date, id, v) values (?, ?, ?)")
-                #        query.addBindValue(d[0])
-                #        query.addBindValue(d[1])
-                #        query.addBindValue(d[2])
-                #        query.exec_()
-                #        if PRINT:
-                #            print "insert into voltage", d
+                if m_id == headerCANv[1][2:]:
+                    b0 = int('0x' + msg[0], 0)
+                    b1 = int('0x' + msg[1], 0)
+                    c = b0 * (headerTempv / slaveNum) + b1
+                    for f in range(1, 1 + min(dataPERmsg, headerTempv / slaveNum)):
+                        d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0))]
+                        query.prepare("insert into temperature (date, id, c) values (?, ?, ?)")
+                        query.addBindValue(d[0])
+                        query.addBindValue(d[1])
+                        query.addBindValue(d[2])
+                        query.exec_()
+                        if PRINT:
+                            print "insert into voltage", d
                             
             self.tableCellall()
             self.tableTempall()
@@ -328,15 +336,24 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             except:
                 print 'len(queue): ' + str(len(queue))
                 if DEBUG:
-                    slaveid = hex(random.randint(0, slaveNum - 1))[2:]
-                    if len(slaveid) == 1:
-                        slaveid = '0' + slaveid
-                    row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
-                    if len(row) == 1:
-                        row = '0' + row
-                    queue.append([str(datetime.datetime.now()), '6058' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
+                    if (i % 2) == 0:
+                        slaveid = hex(random.randint(0, slaveNum - 1))[2:]
+                        if len(slaveid) == 1:
+                            slaveid = '0' + slaveid
+                        row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
+                        if len(row) == 1:
+                            row = '0' + row
+                        queue.append([str(datetime.datetime.now()), '6058' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
+                    else:
+                        slaveid = hex(random.randint(0, slaveNum - 1))[2:]
+                        if len(slaveid) == 1:
+                            slaveid = '0' + slaveid
+                        row = '0'#hex(random.randint(0, headerTempv / slaveNum - 1))[2:]
+                        if len(row) == 1:
+                            row = '0' + row
+                        queue.append([str(datetime.datetime.now()), '6068' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
                 i += 1
-                time.sleep(1)
+                time.sleep(0.5)
                 if state == CLOSE:
                     return
                 state = DISCONNECT
