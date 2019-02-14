@@ -252,6 +252,21 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         query.exec_()
                         if PRINT:
                             print "insert into voltage", d
+                # temp
+                #if m_id == headerCANv[1][2:]:
+                #    b0 = int('0x' + msg[0], 0)
+                #    b1 = int('0x' + msg[1], 0)
+                #    c = b0 * (headerTempv / slaveNum) + b1
+                #    for f in range(1, 1 + dataPERmsg):
+                #        d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0))]
+                #        query.prepare("insert into voltage (date, id, v) values (?, ?, ?)")
+                #        query.addBindValue(d[0])
+                #        query.addBindValue(d[1])
+                #        query.addBindValue(d[2])
+                #        query.exec_()
+                #        if PRINT:
+                #            print "insert into voltage", d
+                            
             self.tableCellall()
             self.tableTempall()
             self.tableCANall()
