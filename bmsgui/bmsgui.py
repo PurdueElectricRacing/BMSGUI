@@ -51,7 +51,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.threadCAN.start()
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
-        self.timer.start(1000)
+        self.timer.start(100)
 
     def tableCellinit(self, *args, **kwargs):
         self.modelCell = QtGui.QStandardItemModel()
@@ -313,9 +313,11 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         if PRINT:
                             print "insert into voltage", d
                 # pack vol
-
+                if m_id == headerCANv[2][2:]:
+                    pass
                 # pack cur
-
+                if m_id == headerCANv[3][2:]:
+                    pass
                 # mod
                 if m_id == headerCANv[5][2:]:
                     soc = int('0x' + msg[0] + msg[1], 0)
@@ -394,7 +396,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             except:
                 # print 'len(queue): ' + str(len(queue))
                 if DEBUG:
-                    if (i % 7) <= 3:
+                    if 0 <= (i % 12) <= 2:
                         slaveid = hex(random.randint(0, slaveNum - 1))[2:]
                         if len(slaveid) == 1:
                             slaveid = '0' + slaveid
@@ -402,7 +404,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         if len(row) == 1:
                             row = '0' + row
                         queue.append([str(datetime.datetime.now()), '6058' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
-                    elif ((i % 7) == 4) or ((i % 7) == 5):
+                    elif 3 <= (i % 12) <= 4:
                         slaveid = hex(random.randint(0, slaveNum - 1))[2:]
                         if len(slaveid) == 1:
                             slaveid = '0' + slaveid
@@ -410,10 +412,26 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         if len(row) == 1:
                             row = '0' + row
                         queue.append([str(datetime.datetime.now()), '6068' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
+                    elif 5 <= (i % 12) <= 7:
+                        slaveid = hex(random.randint(0, slaveNum - 1))[2:]
+                        if len(slaveid) == 1:
+                            slaveid = '0' + slaveid
+                        row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
+                        if len(row) == 1:
+                            row = '0' + row
+                        queue.append([str(datetime.datetime.now()), '6078' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
+                    elif 8 <= (i % 12) <= 10:
+                        slaveid = hex(random.randint(0, slaveNum - 1))[2:]
+                        if len(slaveid) == 1:
+                            slaveid = '0' + slaveid
+                        row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
+                        if len(row) == 1:
+                            row = '0' + row
+                        queue.append([str(datetime.datetime.now()), '6088' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
                     else:
                         queue.append([str(datetime.datetime.now()), '60A8' + '%016d' % (random.randint(0, 10000000000000000))])
                 i += 1
-                time.sleep(0.2)
+                time.sleep(0.05)
                 if state == CLOSE:
                     return
                 state = DISCONNECT

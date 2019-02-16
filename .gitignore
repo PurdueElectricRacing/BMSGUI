@@ -9,3 +9,5 @@ bmsgui/.vs/bmsgui/v15/.suo
 *.opendb
 *.db
 bmsgui/bmsdata.db
+*.db-journal
+bmsgui/bmsdata.db
