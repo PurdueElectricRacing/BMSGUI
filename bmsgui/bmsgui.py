@@ -129,8 +129,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             if PRINT:
                 print query.lastQuery()
             query.first()
-            self.modelTemp.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
-            self.modelTemp.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
+            self.modelMod.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
+            self.modelMod.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
 
     def tableCANinit(self, *args, **kwargs):
         self.modelCAN = QtGui.QStandardItemModel()
@@ -300,10 +300,25 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         query.exec_()
                         if PRINT:
                             print "insert into voltage", d
-                            
+                # mod
+                if m_id == headerCANv[3][2:]:
+                    soc = int('0x' + msg[0] + msg[1], 0)
+                    ocv = int('0x' + msg[2] + msg[3], 0)
+                    cur = int('0x' + msg[4] + msg[5], 0)
+                    g = [soc, ocv, cur]
+                    for f in range(3):
+                        d = [date[:-1] + str(f), headerModv[f], g[f]]
+                        query.prepare("insert into macro (date, id, v) values (?, ?, ?)")
+                        query.addBindValue(d[0])
+                        query.addBindValue(d[1])
+                        query.addBindValue(d[2])
+                        query.exec_()
+                        if PRINT:
+                            print "insert into macro", d
+
             self.tableCellall()
             self.tableTempall()
-            #self.tableModall()
+            self.tableModall()
             self.tableCANall()
         elif (state == LOG) and (len(queue) > 0):
             temp = queue
@@ -363,7 +378,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             except:
                 # print 'len(queue): ' + str(len(queue))
                 if DEBUG:
-                    if (i % 2) == 0:
+                    if (i % 7) <= 3:
                         slaveid = hex(random.randint(0, slaveNum - 1))[2:]
                         if len(slaveid) == 1:
                             slaveid = '0' + slaveid
@@ -371,7 +386,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         if len(row) == 1:
                             row = '0' + row
                         queue.append([str(datetime.datetime.now()), '6058' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
-                    else:
+                    elif ((i % 7) == 4) or ((i % 7) == 5):
                         slaveid = hex(random.randint(0, slaveNum - 1))[2:]
                         if len(slaveid) == 1:
                             slaveid = '0' + slaveid
@@ -379,6 +394,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         if len(row) == 1:
                             row = '0' + row
                         queue.append([str(datetime.datetime.now()), '6068' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
+                    else:
+                        queue.append([str(datetime.datetime.now()), '6088' + '%016d' % (random.randint(0, 10000000000000000))])
                 i += 1
                 time.sleep(0.2)
                 if state == CLOSE:
