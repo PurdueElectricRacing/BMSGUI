@@ -123,14 +123,26 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def tableModall(self, *args, **kwargs):
         query = QtSql.QSqlQuery()
-        for id in headerModv:
-            row = headerModv.index(id)
+        for id in dbModID:
+            row = dbModID.index(id)
             query.exec_("select v, date from macro where id = '" + str(id) + "' order by date desc")
             if PRINT:
                 print query.lastQuery()
             query.first()
             self.modelMod.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
             self.modelMod.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
+
+    def tableOcvinit(self, *args, **kwargs):
+        pass
+
+    def tableOcvall(self, *args, **kwargs):
+        pass
+
+    def tableOhminit(self, *args, **kwargs):
+        pass
+
+    def tableOhmall(self, *args, **kwargs):
+        pass
 
     def tableCANinit(self, *args, **kwargs):
         self.modelCAN = QtGui.QStandardItemModel()
@@ -303,11 +315,11 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 # mod
                 if m_id == headerCANv[3][2:]:
                     soc = int('0x' + msg[0] + msg[1], 0)
-                    ocv = int('0x' + msg[2] + msg[3], 0)
-                    cur = int('0x' + msg[4] + msg[5], 0)
-                    g = [soc, ocv, cur]
+                    pvol = int('0x' + msg[2] + msg[3], 0)
+                    pcur = int('0x' + msg[4] + msg[5], 0)
+                    g = [soc, pvol, pcur]
                     for f in range(3):
-                        d = [date[:-1] + str(f), headerModv[f], g[f]]
+                        d = [date[:-1] + str(f), dbModID[f], g[f]]
                         query.prepare("insert into macro (date, id, v) values (?, ?, ?)")
                         query.addBindValue(d[0])
                         query.addBindValue(d[1])
