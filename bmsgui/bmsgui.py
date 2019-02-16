@@ -197,17 +197,17 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             query.exec_("create table temperature(date text primary key, id text, c text)")
             if PRINT:
                 print query.lastQuery()
-            query.exec_("create table macro(date text primary key, id text, v text)")
-            if PRINT:
-                print query.lastQuery()
             query.exec_("create table ocv(date text primary key, id text, v text)")
             if PRINT:
                 print query.lastQuery()
             query.exec_("create table ir(date text primary key, id text, mohm text)")
             if PRINT:
                 print query.lastQuery()
+            query.exec_("create table macro(date text primary key, id text, v text)")
+            if PRINT:
+                print query.lastQuery()
             for id in headerCANv:
-                query.exec_("insert into candata values('1776-07-04 00:00:0" + str(headerCANv.index(id)) + ".000000', '" + id[2:] + "', '0', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00')")
+                query.exec_("insert into candata values('1776-07-04 00:00:0" + str(headerCANv.index(id)) + ".000000', '" + id[2:] + "', '8', '0xFF', '0xFF', '0xFF', '0xFF', '0xFF', '0xFF', '0xFF', '0xFF')")
                 if PRINT:
                     print query.lastQuery()
         self.connectdb = True
@@ -312,8 +312,12 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         query.exec_()
                         if PRINT:
                             print "insert into voltage", d
+                # pack vol
+
+                # pack cur
+
                 # mod
-                if m_id == headerCANv[3][2:]:
+                if m_id == headerCANv[5][2:]:
                     soc = int('0x' + msg[0] + msg[1], 0)
                     pvol = int('0x' + msg[2] + msg[3], 0)
                     pcur = int('0x' + msg[4] + msg[5], 0)
@@ -407,7 +411,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                             row = '0' + row
                         queue.append([str(datetime.datetime.now()), '6068' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
                     else:
-                        queue.append([str(datetime.datetime.now()), '6088' + '%016d' % (random.randint(0, 10000000000000000))])
+                        queue.append([str(datetime.datetime.now()), '60A8' + '%016d' % (random.randint(0, 10000000000000000))])
                 i += 1
                 time.sleep(0.2)
                 if state == CLOSE:

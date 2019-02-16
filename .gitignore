@@ -8,3 +8,4 @@ bmsgui/.vs/bmsgui/v15/.suo
 *.log
 *.opendb
 *.db
+bmsgui/bmsdata.db
