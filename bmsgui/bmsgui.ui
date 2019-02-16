@@ -92,7 +92,7 @@ background-color: rgb(255, 127, 127);</string>
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>3</number>
         </property>
         <widget class="QWidget" name="tabLive">
          <attribute name="title">
@@ -213,6 +213,50 @@ background-color: rgb(255, 127, 127);</string>
          <attribute name="title">
           <string>Parameters</string>
          </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QCheckBox" name="checkBoxCellVolt">
+            <property name="text">
+             <string>Cell Voltage</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxCellTemp">
+            <property name="text">
+             <string>Cell Temperature</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxPackVol">
+            <property name="text">
+             <string>Pack Voltage</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxPackCur">
+            <property name="text">
+             <string>Pack Current</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxMod">
+            <property name="text">
+             <string>Module Information</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonUpdate">
+            <property name="text">
+             <string>Update</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </widget>
       </item>

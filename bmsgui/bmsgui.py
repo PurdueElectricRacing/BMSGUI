@@ -46,6 +46,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButtonDel.clicked.connect(self.delete)
         self.pushButtonLive.clicked.connect(self.live)
         self.pushButtonStop.clicked.connect(self.stop)
+        self.pushButtonUpdate.clicked.connect(self.param)
         
         self.threadCAN = threading.Thread(target=self.threadCANrun)
         self.threadCAN.start()
@@ -275,7 +276,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def live(self, *args, **kwargs):
         global state, queue, ser
         #write
-        print ser.write('T6103000001\r')
+        print ser.write('T6203000001\r')
         #print ser.write('T4003000001\r')
         state = LIVE
         queue = []
@@ -288,7 +289,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
     def stop(self, *args, **kwargs):
         global state, ser
         #write
-        ser.write('T6103000000\r')
+        ser.write('T6203000000\r')
         state = IDLE
         queue = []
         self.labelState.setText(labelStates[state])
@@ -296,6 +297,22 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButtonDel.setEnabled(self.connectdb)
         self.pushButtonLive.setEnabled(self.connectdb)
         self.pushButtonStop.setEnabled(not self.connectdb)
+
+    def param(self, *args, **kwargs):
+        if state == 0:
+            msg = 'T620802'
+            config = self.checkBoxCellVolt.isChecked()
+            config += (0x1 << 1) * self.checkBoxCellTemp.isChecked()
+            config += (0x1 << 2) * self.checkBoxPackVol.isChecked()
+            config += (0x1 << 3) * self.checkBoxPackCur.isChecked()
+            config += (0x1 << 4) * self.checkBoxMod.isChecked()
+            config = hex(config)[2:]
+            if len(config) == 1:
+                config = '0' + config
+            msg += config + '000000000000\r'
+            if PRINT:
+                print msg
+            self.pushButtonUpdate.setEnabled(False)
 
     def update(self, *args, **kwargs):
         global state, queue
@@ -396,6 +413,9 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         query.exec_()
                         if PRINT:
                             print "insert into macro", d
+                # ack
+                if m_id == headerCANv[7][2:]:
+                    self.pushButtonUpdate.setEnabled(True)
             self.tableCellall()
             self.tableTempall()
             self.tableOcvall()
@@ -496,6 +516,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         queue.append([str(datetime.datetime.now()), '60A8' + '%016d' % (random.randint(0, 10000000000000000))])
                 i += 1
                 time.sleep(0.1)
+                #queue.append([str(datetime.datetime.now()), '60C8' + '0200000000000000'])
                 if state == CLOSE:
                     return
                 state = DISCONNECT
