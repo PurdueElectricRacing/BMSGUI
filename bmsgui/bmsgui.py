@@ -75,7 +75,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         for id in range(headerCellv):
             row = id
             query.exec_("select v, date from voltage where id = '" + str(id) + "' order by date desc")
-            #print query.lastQuery()
+            if PRINT:
+                print query.lastQuery()
             query.first()
             self.modelCell.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
             self.modelCell.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
@@ -102,14 +103,34 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         for id in range(headerTempv):
             row = id
             query.exec_("select c, date from temperature where id = '" + str(id) + "' order by date desc")
-            #print query.lastQuery()
+            if PRINT:
+                print query.lastQuery()
             query.first()
             self.modelTemp.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
             self.modelTemp.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
 
     def tableModinit(self, *args, **kwargs):
-        #soc soh i with live /ocv mohm seperate
-        pass
+        self.modelMod = QtGui.QStandardItemModel()
+        self.modelMod.setHorizontalHeaderLabels(headerModh)
+        self.modelMod.setVerticalHeaderLabels(headerModv)
+        rowCount = self.modelMod.rowCount()
+        for row in range(rowCount):
+            self.modelMod.setItem(row, 0, QtGui.QStandardItem('-'))
+            self.modelMod.setItem(row, 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS.MMMMMM'))
+        self.tableMod.setModel(self.modelMod)
+        self.tableMod.horizontalHeader().setStretchLastSection(True)
+        self.tableMod.horizontalHeader().resizeSections(3)
+
+    def tableModall(self, *args, **kwargs):
+        query = QtSql.QSqlQuery()
+        for id in headerModv:
+            row = headerModv.index(id)
+            query.exec_("select v, date from macro where id = '" + str(id) + "' order by date desc")
+            if PRINT:
+                print query.lastQuery()
+            query.first()
+            self.modelTemp.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
+            self.modelTemp.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
 
     def tableCANinit(self, *args, **kwargs):
         self.modelCAN = QtGui.QStandardItemModel()
@@ -133,7 +154,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         for id in headerCANv:
             row = headerCANv.index(id)
             query.exec_("select len, b0, b1, b2, b3, b4, b5, b6, b7, date from candata where id = '" + id[2:] + "' order by date desc")
-            #print query.lastQuery()
+            if PRINT:
+                print query.lastQuery()
             query.first()
             for col in range(colCount):
                 self.modelCAN.setItem(row, col, QtGui.QStandardItem(str(query.value(col).toString())))
@@ -146,7 +168,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             new = 1
         self.db = QtSql.QSqlDatabase.addDatabase('QSQLITE')
         self.db.setDatabaseName(self.dbname)
-        print self.dbname
+        if PRINT:
+            print self.dbname
         if not self.db.open():
             QtGui.QMessageBox.critical(None, QtGui.qApp.tr("Cannot open database"), QtGui.qApp.tr(errorDBopen), QtGui.QMessageBox.Cancel)
             self.db = None
@@ -160,6 +183,9 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             if PRINT:
                 print query.lastQuery()
             query.exec_("create table temperature(date text primary key, id text, c text)")
+            if PRINT:
+                print query.lastQuery()
+            query.exec_("create table macro(date text primary key, id text, v text)")
             if PRINT:
                 print query.lastQuery()
             query.exec_("create table ocv(date text primary key, id text, v text)")
@@ -277,6 +303,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                             
             self.tableCellall()
             self.tableTempall()
+            #self.tableModall()
             self.tableCANall()
         elif (state == LOG) and (len(queue) > 0):
             temp = queue
@@ -334,7 +361,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         except (serial.serialutil.SerialException):
                             print(str(in_wait) + " !!!!")
             except:
-                print 'len(queue): ' + str(len(queue))
+                # print 'len(queue): ' + str(len(queue))
                 if DEBUG:
                     if (i % 2) == 0:
                         slaveid = hex(random.randint(0, slaveNum - 1))[2:]
@@ -353,7 +380,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                             row = '0' + row
                         queue.append([str(datetime.datetime.now()), '6068' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
                 i += 1
-                time.sleep(0.5)
+                time.sleep(0.2)
                 if state == CLOSE:
                     return
                 state = DISCONNECT

@@ -2,9 +2,11 @@ headerCellh = ['Voltage (V)', 'Date']
 headerCellv = 12    # number of total cells
 headerTemph = ['Temperature (\xb0C)', 'Date']
 headerTempv = 4     # number of total thermistors
+headerModh = ['Value', 'Date']
+headerModv = ['SOC', 'OCV', 'I']
 headerCANh = ['Length', 'Byte0', 'Byte1', 'Byte2', 'Byte3', 'Byte4', 'Byte5', 'Byte6', 'Byte7', 'Date']
-headerCANv = ['0x605', '0x606', '0x607']   # CAN data to display on GUI
-# volt, temp, error
+headerCANv = ['0x605', '0x606', '0x607', '0x608']   # CAN data to display on GUI
+# volt, temp, error, macro
 labelStates = ['State: disconnect', 'State: idle', 'State: log', 'State: live']
 ignoreDec = ['update']
 

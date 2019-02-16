@@ -98,7 +98,7 @@ class Ui_MainWindow(object):
         self.labelMod.setObjectName(_fromUtf8("labelMod"))
         self.verticalLayout_4.addWidget(self.labelMod)
         self.tableMod = QtGui.QTableView(self.tabLive)
-        self.tableMod.setMaximumSize(QtCore.QSize(16777215, 100))
+        self.tableMod.setMaximumSize(QtCore.QSize(16777215, 160))
         self.tableMod.setStyleSheet(_fromUtf8(""))
         self.tableMod.setObjectName(_fromUtf8("tableMod"))
         self.verticalLayout_4.addWidget(self.tableMod)
