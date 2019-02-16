@@ -34,10 +34,10 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
         self.tableCellinit()
         self.tableTempinit()
+        self.tableOcvinit()
+        self.tableOhminit()
         self.tableModinit()
         self.tableCANinit()
-        #tableOcv
-        #tableOhm
         self.DBinit()
 
         self.actionQuit.triggered.connect(self.closeEvent)
@@ -109,6 +109,62 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             self.modelTemp.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
             self.modelTemp.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
 
+    def tableOcvinit(self, *args, **kwargs):
+        self.modelOcv = QtGui.QStandardItemModel()
+        self.modelOcv.setHorizontalHeaderLabels(headerCellh)
+        cellv = []
+        for i in range(headerCellv):
+            cellv.append('Cell ' + '%02d' % (i,))
+        self.modelOcv.setVerticalHeaderLabels(cellv)
+        rowCount, colCount = self.modelOcv.rowCount(), self.modelOcv.columnCount()
+        for row in range(rowCount):
+            for col in range(colCount - 1):
+                self.modelOcv.setItem(row, col, QtGui.QStandardItem('-'))
+            self.modelOcv.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS.MMMMMM'))
+        self.tableOcv.setModel(self.modelOcv)
+        self.tableOcv.horizontalHeader().setStretchLastSection(True)
+        self.tableOcv.horizontalHeader().resizeSections(3)
+
+    def tableOcvall(self, *args, **kwargs):
+        query = QtSql.QSqlQuery()
+        colCount = self.modelOcv.columnCount()
+        for id in range(headerCellv):
+            row = id
+            query.exec_("select v, date from ocv where id = '" + str(id) + "' order by date desc")
+            if PRINT:
+                print query.lastQuery()
+            query.first()
+            self.modelOcv.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
+            self.modelOcv.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
+
+    def tableOhminit(self, *args, **kwargs):
+        self.modelOhm = QtGui.QStandardItemModel()
+        self.modelOhm.setHorizontalHeaderLabels(headerOhmh)
+        cellv = []
+        for i in range(headerCellv):
+            cellv.append('Cell ' + '%02d' % (i,))
+        self.modelOhm.setVerticalHeaderLabels(cellv)
+        rowCount, colCount = self.modelOhm.rowCount(), self.modelOhm.columnCount()
+        for row in range(rowCount):
+            for col in range(colCount - 1):
+                self.modelOhm.setItem(row, col, QtGui.QStandardItem('-'))
+            self.modelOhm.setItem(row, colCount - 1, QtGui.QStandardItem('YYYY-mm-dd HH:MM:SS.MMMMMM'))
+        self.tableOhm.setModel(self.modelOhm)
+        self.tableOhm.horizontalHeader().setStretchLastSection(True)
+        self.tableOhm.horizontalHeader().resizeSections(3)
+
+    def tableOhmall(self, *args, **kwargs):
+        query = QtSql.QSqlQuery()
+        colCount = self.modelOhm.columnCount()
+        for id in range(headerCellv):
+            row = id
+            query.exec_("select mohm, date from ir where id = '" + str(id) + "' order by date desc")
+            if PRINT:
+                print query.lastQuery()
+            query.first()
+            self.modelOhm.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
+            self.modelOhm.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
+
     def tableModinit(self, *args, **kwargs):
         self.modelMod = QtGui.QStandardItemModel()
         self.modelMod.setHorizontalHeaderLabels(headerModh)
@@ -131,18 +187,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             query.first()
             self.modelMod.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
             self.modelMod.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
-
-    def tableOcvinit(self, *args, **kwargs):
-        pass
-
-    def tableOcvall(self, *args, **kwargs):
-        pass
-
-    def tableOhminit(self, *args, **kwargs):
-        pass
-
-    def tableOhmall(self, *args, **kwargs):
-        pass
 
     def tableCANinit(self, *args, **kwargs):
         self.modelCAN = QtGui.QStandardItemModel()
@@ -211,8 +255,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 if PRINT:
                     print query.lastQuery()
         self.connectdb = True
-        
-        self.tableCANall()
 
     def log(self, *args, **kwargs):
         global state, queue
@@ -242,7 +284,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButtonDel.setEnabled(not self.connectdb)
         self.pushButtonLive.setEnabled(not self.connectdb)
         self.pushButtonStop.setEnabled(self.connectdb)
-        self.tableCANall()
 
     def stop(self, *args, **kwargs):
         global state, ser
@@ -314,10 +355,32 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                             print "insert into voltage", d
                 # pack vol
                 if m_id == headerCANv[2][2:]:
-                    pass
+                    b0 = int('0x' + msg[0], 0)
+                    b1 = int('0x' + msg[1], 0)
+                    c = b0 * cellsPERslave + b1 * dataPERmsg
+                    for f in range(1, 1 + dataPERmsg):
+                        d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0))]
+                        query.prepare("insert into ocv (date, id, v) values (?, ?, ?)")
+                        query.addBindValue(d[0])
+                        query.addBindValue(d[1])
+                        query.addBindValue(d[2])
+                        query.exec_()
+                        if PRINT:
+                            print "insert into ocv", d
                 # pack cur
                 if m_id == headerCANv[3][2:]:
-                    pass
+                    b0 = int('0x' + msg[0], 0)
+                    b1 = int('0x' + msg[1], 0)
+                    c = b0 * cellsPERslave + b1 * dataPERmsg
+                    for f in range(1, 1 + dataPERmsg):
+                        d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0))]
+                        query.prepare("insert into ir (date, id, mohm) values (?, ?, ?)")
+                        query.addBindValue(d[0])
+                        query.addBindValue(d[1])
+                        query.addBindValue(d[2])
+                        query.exec_()
+                        if PRINT:
+                            print "insert into ir", d
                 # mod
                 if m_id == headerCANv[5][2:]:
                     soc = int('0x' + msg[0] + msg[1], 0)
@@ -333,9 +396,10 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         query.exec_()
                         if PRINT:
                             print "insert into macro", d
-
             self.tableCellall()
             self.tableTempall()
+            self.tableOcvall()
+            self.tableOhmall()
             self.tableModall()
             self.tableCANall()
         elif (state == LOG) and (len(queue) > 0):
@@ -431,7 +495,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                     else:
                         queue.append([str(datetime.datetime.now()), '60A8' + '%016d' % (random.randint(0, 10000000000000000))])
                 i += 1
-                time.sleep(0.05)
+                time.sleep(0.1)
                 if state == CLOSE:
                     return
                 state = DISCONNECT

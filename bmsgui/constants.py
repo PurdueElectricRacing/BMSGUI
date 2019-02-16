@@ -2,6 +2,7 @@ headerCellh = ['Voltage (V)', 'Date']
 headerCellv = 12    # number of total cells
 headerTemph = ['Temperature (\xb0C)', 'Date']
 headerTempv = 4     # number of total thermistors
+headerOhmh = ['Internal Resistance (mohm)', 'Date']
 headerModh = ['Value', 'Date']
 headerModv = ['State of Charge', 'Pack Voltage', 'Pack Current']
 dbModID = ['soc', 'pvol', 'pcur']
