@@ -53,6 +53,15 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
         self.timer.start(100)
+        if DEBUG:
+            print 'here'
+            state = IDLE
+            self.connectdb = True
+            self.labelState.setText(labelStates[state])
+            self.pushButtonLog.setEnabled(self.connectdb)
+            self.pushButtonDel.setEnabled(self.connectdb)
+            self.pushButtonLive.setEnabled(self.connectdb)
+            self.pushButtonStop.setEnabled(not self.connectdb)
 
     def tableCellinit(self, *args, **kwargs):
         self.modelCell = QtGui.QStandardItemModel()
@@ -259,7 +268,11 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def log(self, *args, **kwargs):
         global state, queue
-        #write
+        msg = 'T62080000000000000000\r'
+        if not DEBUG:
+            ser.write(msg)
+        if PRINT:
+            print msg
         state = LOG
         queue = []
         self.logname = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S') + '_bms.log'
@@ -270,14 +283,29 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButtonStop.setEnabled(not self.connectdb)
 
     def delete(self, *args, **kwargs):
-        #write
-        pass
+        msg = 'T62080100000000000000\r'
+        if not DEBUG:
+            ser.write(msg)
+        if PRINT:
+            print msg
+        
 
     def live(self, *args, **kwargs):
         global state, queue, ser
-        #write
-        print ser.write('T6203000001\r')
-        #print ser.write('T4003000001\r')
+        msg = 'T620802'
+        config = self.checkBoxCellVolt.isChecked()
+        config += (0x1 << 1) * self.checkBoxCellTemp.isChecked()
+        config += (0x1 << 2) * self.checkBoxPackVol.isChecked()
+        config += (0x1 << 3) * self.checkBoxPackCur.isChecked()
+        config += (0x1 << 4) * self.checkBoxMod.isChecked()
+        config = hex(config)[2:]
+        if len(config) == 1:
+            config = '0' + config
+        msg += config + '000000000000\r'
+        if not DEBUG:
+            ser.write(msg)
+        if PRINT:
+            print msg
         state = LIVE
         queue = []
         self.labelState.setText(labelStates[state])
@@ -288,8 +316,11 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def stop(self, *args, **kwargs):
         global state, ser
-        #write
-        ser.write('T6203000000\r')
+        msg = 'T62080300000000000000\r'
+        if not DEBUG:
+            ser.write(msg)
+        if PRINT:
+            print msg
         state = IDLE
         queue = []
         self.labelState.setText(labelStates[state])
@@ -310,13 +341,15 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             if len(config) == 1:
                 config = '0' + config
             msg += config + '000000000000\r'
+            if DEBUG:
+                ser.write(msg)
             if PRINT:
                 print msg
             self.pushButtonUpdate.setEnabled(False)
 
     def update(self, *args, **kwargs):
         global state, queue
-        if ((state == LIVE) or DEBUG) and (len(queue) > 0):
+        if (state == LIVE) and (len(queue) > 0):
             query = QtSql.QSqlQuery()
             temp = queue
             queue = []
@@ -425,18 +458,16 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         elif (state == LOG) and (len(queue) > 0):
             temp = queue
             queue = []
+            if state != LOG: #some code to stop the log
+                state = IDLE
+                self.labelState.setText(labelStates[state])
+                self.pushButtonLog.setEnabled(self.connectdb)
+                self.pushButtonDel.setEnabled(self.connectdb)
+                self.pushButtonLive.setEnabled(self.connectdb)
+                self.pushButtonStop.setEnabled(not self.connectdb)
             with open(self.logname, 'a') as f:
                 for entry in temp:
-                    if entry == 'END':
-                        state = IDLE
-                        self.labelState.setText(labelStates[state])
-                        self.pushButtonLog.setEnabled(self.connectdb)
-                        self.pushButtonDel.setEnabled(self.connectdb)
-                        self.pushButtonLive.setEnabled(self.connectdb)
-                        self.pushButtonStop.setEnabled(not self.connectdb)
-                        break
-                    else:
-                        f.write(entry)
+                    f.write(entry)
 
     def threadCANrun(self, *args, **kwargs):
         global state, ser, queue
@@ -519,12 +550,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 #queue.append([str(datetime.datetime.now()), '60C8' + '0200000000000000'])
                 if state == CLOSE:
                     return
-                state = DISCONNECT
-                self.labelState.setText(labelStates[state])
-                self.pushButtonLog.setEnabled(not self.connectdb)
-                self.pushButtonDel.setEnabled(not self.connectdb)
-                self.pushButtonLive.setEnabled(not self.connectdb)
-                self.pushButtonStop.setEnabled(not self.connectdb)
 
     def closeEvent(self, event, *args, **kwargs):
         global state
