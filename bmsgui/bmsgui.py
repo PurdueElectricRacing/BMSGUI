@@ -23,6 +23,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         design.Ui_MainWindow.__init__(self)
         self.setupUi(self)
         self.connectdb = False
+        self.logcounter = 0
         self.dbname = 'bmsdata.db'
         self.db = None
         self.logname = ''
@@ -54,7 +55,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.timer.timeout.connect(self.update)
         self.timer.start(100)
         if DEBUG:
-            print 'here'
             state = IDLE
             self.connectdb = True
             self.labelState.setText(labelStates[state])
@@ -457,21 +457,40 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             self.tableCANall()
         elif (state == LOG) and (len(queue) > 0):
             temp = queue
+            #print 'log', temp
             queue = []
-            if state != LOG: #some code to stop the log
-                state = IDLE
-                self.labelState.setText(labelStates[state])
-                self.pushButtonLog.setEnabled(self.connectdb)
-                self.pushButtonDel.setEnabled(self.connectdb)
-                self.pushButtonLive.setEnabled(self.connectdb)
-                self.pushButtonStop.setEnabled(not self.connectdb)
-            with open(self.logname, 'a') as f:
+            if self.logcounter == 0:
                 for entry in temp:
-                    f.write(entry)
+                    if entry[1] == '60C100':
+                        self.logcounter += 1
+                        temp = temp[1:]
+                        break
+            if self.logcounter > 0:                    
+                with open(self.logname, 'a') as f:
+                    for entry in temp:
+                        if entry[1] == '60C101':
+                            self.logcounter = -1
+                            state = IDLE
+                            self.labelState.setText(labelStates[state])
+                            self.pushButtonLog.setEnabled(self.connectdb)
+                            self.pushButtonDel.setEnabled(self.connectdb)
+                            self.pushButtonLive.setEnabled(self.connectdb)
+                            self.pushButtonStop.setEnabled(not self.connectdb)
+                            break
+                        else:
+                            for e in entry[1].split():
+                                f.write(chr(int(e, 16)))
 
     def threadCANrun(self, *args, **kwargs):
         global state, ser, queue
         i = 0
+        if DEBUG:
+            with open('test0hex.txt') as f:
+                test0hex = f.read().split('\n')
+            test0hexlen = len(test0hex)
+            c = 0
+            print 'here'
+            print test0hexlen
         while(1):
             if state == CLOSE:
                 return
@@ -511,42 +530,53 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             except:
                 # print 'len(queue): ' + str(len(queue))
                 if DEBUG:
-                    if 0 <= (i % 12) <= 2:
-                        slaveid = hex(random.randint(0, slaveNum - 1))[2:]
-                        if len(slaveid) == 1:
-                            slaveid = '0' + slaveid
-                        row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
-                        if len(row) == 1:
-                            row = '0' + row
-                        queue.append([str(datetime.datetime.now()), '6058' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
-                    elif 3 <= (i % 12) <= 4:
-                        slaveid = hex(random.randint(0, slaveNum - 1))[2:]
-                        if len(slaveid) == 1:
-                            slaveid = '0' + slaveid
-                        row = '0'#hex(random.randint(0, headerTempv / slaveNum - 1))[2:]
-                        if len(row) == 1:
-                            row = '0' + row
-                        queue.append([str(datetime.datetime.now()), '6068' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
-                    elif 5 <= (i % 12) <= 7:
-                        slaveid = hex(random.randint(0, slaveNum - 1))[2:]
-                        if len(slaveid) == 1:
-                            slaveid = '0' + slaveid
-                        row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
-                        if len(row) == 1:
-                            row = '0' + row
-                        queue.append([str(datetime.datetime.now()), '6078' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
-                    elif 8 <= (i % 12) <= 10:
-                        slaveid = hex(random.randint(0, slaveNum - 1))[2:]
-                        if len(slaveid) == 1:
-                            slaveid = '0' + slaveid
-                        row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
-                        if len(row) == 1:
-                            row = '0' + row
-                        queue.append([str(datetime.datetime.now()), '6088' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
-                    else:
-                        queue.append([str(datetime.datetime.now()), '60A8' + '%016d' % (random.randint(0, 10000000000000000))])
+                    if state == LIVE:
+                        if 0 <= (i % 12) <= 2:
+                            slaveid = hex(random.randint(0, slaveNum - 1))[2:]
+                            if len(slaveid) == 1:
+                                slaveid = '0' + slaveid
+                            row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
+                            if len(row) == 1:
+                                row = '0' + row
+                            queue.append([str(datetime.datetime.now()), '6058' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
+                        elif 3 <= (i % 12) <= 4:
+                            slaveid = hex(random.randint(0, slaveNum - 1))[2:]
+                            if len(slaveid) == 1:
+                                slaveid = '0' + slaveid
+                            row = '0'#hex(random.randint(0, headerTempv / slaveNum - 1))[2:]
+                            if len(row) == 1:
+                                row = '0' + row
+                            queue.append([str(datetime.datetime.now()), '6068' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
+                        elif 5 <= (i % 12) <= 7:
+                            slaveid = hex(random.randint(0, slaveNum - 1))[2:]
+                            if len(slaveid) == 1:
+                                slaveid = '0' + slaveid
+                            row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
+                            if len(row) == 1:
+                                row = '0' + row
+                            queue.append([str(datetime.datetime.now()), '6078' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
+                        elif 8 <= (i % 12) <= 10:
+                            slaveid = hex(random.randint(0, slaveNum - 1))[2:]
+                            if len(slaveid) == 1:
+                                slaveid = '0' + slaveid
+                            row = hex(random.randint(0, cellsPERslave / dataPERmsg - 1))[2:]
+                            if len(row) == 1:
+                                row = '0' + row
+                            queue.append([str(datetime.datetime.now()), '6088' + slaveid + row + '%012d' % (random.randint(0, 1000000000000))])
+                        else:
+                            queue.append([str(datetime.datetime.now()), '60A8' + '%016d' % (random.randint(0, 10000000000000000))])
+                    if state == LOG:
+                        if c == 0:
+                            queue.append([str(datetime.datetime.now()), '60C1' + '00'])
+                        if c < test0hexlen:
+                            queue.append(['0', test0hex[c]])
+                            c += 1
+                        else:
+                            queue.append([str(datetime.datetime.now()), '60C1' + '01'])
+                            c = 0 # demo only works with one log
+                            time.sleep(0.5)
                 i += 1
-                time.sleep(0.1)
+                time.sleep(0.01)
                 #queue.append([str(datetime.datetime.now()), '60C8' + '0200000000000000'])
                 if state == CLOSE:
                     return
