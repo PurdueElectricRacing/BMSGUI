@@ -268,7 +268,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def log(self, *args, **kwargs):
         global state, queue
-        msg = 'T62080000000000000000\r'
+        msg = 'T62080100000000000000\r' # 0:start
         if not DEBUG:
             ser.write(msg)
         if PRINT:
@@ -283,7 +283,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButtonStop.setEnabled(not self.connectdb)
 
     def delete(self, *args, **kwargs):
-        msg = 'T62080100000000000000\r'
+        msg = 'T62080200000000000000\r' #1: delete
         if not DEBUG:
             ser.write(msg)
         if PRINT:
@@ -292,7 +292,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def live(self, *args, **kwargs):
         global state, queue, ser
-        msg = 'T620802'
+        msg = 'T620804' #2:Config
         config = self.checkBoxCellVolt.isChecked()
         config += (0x1 << 1) * self.checkBoxCellTemp.isChecked()
         config += (0x1 << 2) * self.checkBoxPackVol.isChecked()
@@ -316,7 +316,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def stop(self, *args, **kwargs):
         global state, ser
-        msg = 'T62080300000000000000\r'
+        msg = 'T62080400000000000000\r'
         if not DEBUG:
             ser.write(msg)
         if PRINT:
@@ -331,7 +331,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def param(self, *args, **kwargs):
         if state == 0:
-            msg = 'T620802'
+            msg = 'T620804' #2:config
             config = self.checkBoxCellVolt.isChecked()
             config += (0x1 << 1) * self.checkBoxCellTemp.isChecked()
             config += (0x1 << 2) * self.checkBoxPackVol.isChecked()
@@ -461,14 +461,14 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             queue = []
             if self.logcounter == 0:
                 for entry in temp:
-                    if entry[1] == '60C100':
+                    if entry[1] == '60C101':
                         self.logcounter += 1
                         temp = temp[1:]
                         break
             if self.logcounter > 0:                    
                 with open(self.logname, 'a') as f:
                     for entry in temp:
-                        if entry[1] == '60C101':
+                        if entry[1] == '60C102':
                             self.logcounter = -1
                             state = IDLE
                             self.labelState.setText(labelStates[state])
@@ -489,8 +489,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 test0hex = f.read().split('\n')
             test0hexlen = len(test0hex)
             c = 0
-            print 'here'
-            print test0hexlen
+            #print 'here'
+            #print test0hexlen
         while(1):
             if state == CLOSE:
                 return
@@ -567,16 +567,16 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                             queue.append([str(datetime.datetime.now()), '60A8' + '%016d' % (random.randint(0, 10000000000000000))])
                     if state == LOG:
                         if c == 0:
-                            queue.append([str(datetime.datetime.now()), '60C1' + '00'])
+                            queue.append([str(datetime.datetime.now()), '60C1' + '01'])
                         if c < test0hexlen:
                             queue.append(['0', test0hex[c]])
                             c += 1
                         else:
-                            queue.append([str(datetime.datetime.now()), '60C1' + '01'])
+                            queue.append([str(datetime.datetime.now()), '60C1' + '02'])
                             c = 0 # demo only works with one log
                             time.sleep(0.5)
                 i += 1
-                time.sleep(0.01)
+                time.sleep(0.1)
                 #queue.append([str(datetime.datetime.now()), '60C8' + '0200000000000000'])
                 if state == CLOSE:
                     return
