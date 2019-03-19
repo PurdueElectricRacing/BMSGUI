@@ -40,6 +40,12 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableModinit()
         self.tableCANinit()
         self.DBinit()
+        self.tableCellall()
+        self.tableTempall()
+        self.tableOcvall()
+        self.tableOhmall()
+        self.tableModall()
+        self.tableCANall()
 
         self.actionQuit.triggered.connect(self.closeEvent)
 
@@ -289,7 +295,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         if PRINT:
             print msg
         
-
     def live(self, *args, **kwargs):
         global state, queue, ser
         msg = 'T620804' #2:Config
@@ -373,6 +378,14 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 query.addBindValue('0x' + msg[6])
                 query.addBindValue('0x' + msg[7])
                 query.exec_()
+
+                # immediate write to modelCAN
+                row = headerCANv.index('0x' + m_id)
+                self.modelCAN.setItem(row, 9, QtGui.QStandardItem(date))
+                self.modelCAN.setItem(row, 0, QtGui.QStandardItem(m_len))
+                for i in range(1, 9):
+                    self.modelCAN.setItem(row, i, QtGui.QStandardItem('0x' + msg[i - 1]))
+
                 if PRINT:
                     print "insert into candata", entry
                 # voltage
@@ -449,12 +462,12 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 # ack
                 if m_id == headerCANv[7][2:]:
                     self.pushButtonUpdate.setEnabled(True)
-            self.tableCellall()
-            self.tableTempall()
-            self.tableOcvall()
-            self.tableOhmall()
-            self.tableModall()
-            self.tableCANall()
+            #self.tableCellall()
+            #self.tableTempall()
+            #self.tableOcvall()
+            #self.tableOhmall()
+            #self.tableModall()
+            #self.tableCANall()
         elif (state == LOG) and (len(queue) > 0):
             temp = queue
             #print 'log', temp
@@ -576,7 +589,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                             c = 0 # demo only works with one log
                             time.sleep(0.5)
                 i += 1
-                time.sleep(0.1)
+                time.sleep(0.2)
                 #queue.append([str(datetime.datetime.now()), '60C8' + '0200000000000000'])
                 if state == CLOSE:
                     return
