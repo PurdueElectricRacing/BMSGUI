@@ -388,6 +388,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
                 if PRINT:
                     print "insert into candata", entry
+
                 # voltage
                 if m_id == headerCANv[0][2:]:
                     b0 = int('0x' + msg[0], 0)
@@ -400,6 +401,10 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         query.addBindValue(d[1])
                         query.addBindValue(d[2])
                         query.exec_()
+
+                        # immediate write to modelCell
+                        self.modelCell.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
+                        self.modelCell.setItem(int(d[1]), 1, QtGui.QStandardItem(d[0]))
                         if PRINT:
                             print "insert into voltage", d
                 # temp
@@ -414,9 +419,14 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         query.addBindValue(d[1])
                         query.addBindValue(d[2])
                         query.exec_()
+
+                        # immediate write to modelTemp
+                        self.modelTemp.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
+                        self.modelTemp.setItem(int(d[1]), 1, QtGui.QStandardItem(d[0]))
+
                         if PRINT:
                             print "insert into voltage", d
-                # pack vol
+                # ocv
                 if m_id == headerCANv[2][2:]:
                     b0 = int('0x' + msg[0], 0)
                     b1 = int('0x' + msg[1], 0)
@@ -428,9 +438,14 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         query.addBindValue(d[1])
                         query.addBindValue(d[2])
                         query.exec_()
+
+                        # immediate write to modelOcv
+                        self.modelOcv.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
+                        self.modelOcv.setItem(int(d[1]), 1, QtGui.QStandardItem(d[0]))
+
                         if PRINT:
                             print "insert into ocv", d
-                # pack cur
+                # ohm
                 if m_id == headerCANv[3][2:]:
                     b0 = int('0x' + msg[0], 0)
                     b1 = int('0x' + msg[1], 0)
@@ -442,6 +457,11 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         query.addBindValue(d[1])
                         query.addBindValue(d[2])
                         query.exec_()
+
+                        # immediate write to modelOhm
+                        self.modelOhm.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
+                        self.modelOhm.setItem(int(d[1]), 1, QtGui.QStandardItem(d[0]))
+
                         if PRINT:
                             print "insert into ir", d
                 # mod
@@ -457,6 +477,11 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         query.addBindValue(d[1])
                         query.addBindValue(d[2])
                         query.exec_()
+
+                        # immediate write to modelMod
+                        self.modelMod.setItem(dbModID.index(d[1]), 0, QtGui.QStandardItem(str(d[2])))
+                        self.modelMod.setItem(dbModID.index(d[1]), 1, QtGui.QStandardItem(d[0]))
+
                         if PRINT:
                             print "insert into macro", d
                 # ack
