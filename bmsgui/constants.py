@@ -7,7 +7,7 @@ headerModh = ['Value', 'Date']
 headerModv = ['State of Charge', 'Pack Voltage', 'Pack Current']
 dbModID = ['soc', 'pvol', 'pcur']
 headerCANh = ['Length', 'Byte0', 'Byte1', 'Byte2', 'Byte3', 'Byte4', 'Byte5', 'Byte6', 'Byte7', 'Date']
-headerCANv = ['0x605', '0x606', '0x607', '0x608', '0x609', '0x60A', '0x60B', '0x60C']   # CAN data to display on GUI
+headerCANv = ['0x605', '0x606', '0x607', '0x608', '0x609', '0x60A', '0x60B', '0x60C', '0x60D']   # CAN data to display on GUI
 # volt, temp, packv, packi, error, macro, sdc, sdc
 labelStates = ['State: disconnect', 'State: idle', 'State: log', 'State: live']
 ignoreDec = ['update']
