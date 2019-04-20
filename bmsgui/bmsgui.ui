@@ -7,8 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>1600</width>
-    <height>1200</height>
+    <height>1536</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>24</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -37,6 +42,11 @@ padding: 4px;</string>
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonLog">
+          <property name="font">
+           <font>
+            <pointsize>24</pointsize>
+           </font>
+          </property>
           <property name="styleSheet">
            <string notr="true">border-width: 2px;
 border-radius: 15px;
@@ -50,6 +60,11 @@ background-color: rgb(255, 255, 127);</string>
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonDel">
+          <property name="font">
+           <font>
+            <pointsize>24</pointsize>
+           </font>
+          </property>
           <property name="styleSheet">
            <string notr="true">border-width: 2px;
 background-color: rgb(255, 127, 127);
@@ -63,6 +78,11 @@ padding: 4px;</string>
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonLive">
+          <property name="font">
+           <font>
+            <pointsize>24</pointsize>
+           </font>
+          </property>
           <property name="styleSheet">
            <string notr="true">border-width: 2px;
 border-radius: 15px;
@@ -76,6 +96,11 @@ background-color: rgb(170, 255, 127);</string>
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonStop">
+          <property name="font">
+           <font>
+            <pointsize>24</pointsize>
+           </font>
+          </property>
           <property name="styleSheet">
            <string notr="true">border-width: 2px;
 border-radius: 15px;
@@ -111,6 +136,11 @@ background-color: rgb(255, 127, 127);</string>
           </item>
           <item>
            <widget class="QTableView" name="tableCell">
+            <property name="font">
+             <font>
+              <pointsize>24</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -128,6 +158,11 @@ background-color: rgb(255, 127, 127);</string>
           </item>
           <item>
            <widget class="QTableView" name="tableTemp">
+            <property name="font">
+             <font>
+              <pointsize>24</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -151,6 +186,11 @@ background-color: rgb(255, 127, 127);</string>
               <height>160</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>24</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -171,7 +211,13 @@ background-color: rgb(255, 127, 127);</string>
            </widget>
           </item>
           <item>
-           <widget class="QTableView" name="tableOcv"/>
+           <widget class="QTableView" name="tableOcv">
+            <property name="font">
+             <font>
+              <pointsize>24</pointsize>
+             </font>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="labelOhm">
@@ -181,7 +227,13 @@ background-color: rgb(255, 127, 127);</string>
            </widget>
           </item>
           <item>
-           <widget class="QTableView" name="tableOhm"/>
+           <widget class="QTableView" name="tableOhm">
+            <property name="font">
+             <font>
+              <pointsize>24</pointsize>
+             </font>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -202,6 +254,11 @@ background-color: rgb(255, 127, 127);</string>
           </item>
           <item>
            <widget class="QTableView" name="tableCAN">
+            <property name="font">
+             <font>
+              <pointsize>24</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true"/>
             </property>

@@ -25,7 +25,10 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(1600, 1200)
+        MainWindow.resize(1600, 1536)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        MainWindow.setFont(font)
         MainWindow.setStyleSheet(_fromUtf8(""))
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
@@ -43,6 +46,9 @@ class Ui_MainWindow(object):
         self.labelState.setObjectName(_fromUtf8("labelState"))
         self.horizontalLayout.addWidget(self.labelState)
         self.pushButtonLog = QtGui.QPushButton(self.centralwidget)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.pushButtonLog.setFont(font)
         self.pushButtonLog.setStyleSheet(_fromUtf8("border-width: 2px;\n"
 "border-radius: 15px;\n"
 "padding: 4px;\n"
@@ -50,6 +56,9 @@ class Ui_MainWindow(object):
         self.pushButtonLog.setObjectName(_fromUtf8("pushButtonLog"))
         self.horizontalLayout.addWidget(self.pushButtonLog)
         self.pushButtonDel = QtGui.QPushButton(self.centralwidget)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.pushButtonDel.setFont(font)
         self.pushButtonDel.setStyleSheet(_fromUtf8("border-width: 2px;\n"
 "background-color: rgb(255, 127, 127);\n"
 "border-radius: 15px;\n"
@@ -57,6 +66,9 @@ class Ui_MainWindow(object):
         self.pushButtonDel.setObjectName(_fromUtf8("pushButtonDel"))
         self.horizontalLayout.addWidget(self.pushButtonDel)
         self.pushButtonLive = QtGui.QPushButton(self.centralwidget)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.pushButtonLive.setFont(font)
         self.pushButtonLive.setStyleSheet(_fromUtf8("border-width: 2px;\n"
 "border-radius: 15px;\n"
 "padding: 4px;\n"
@@ -64,6 +76,9 @@ class Ui_MainWindow(object):
         self.pushButtonLive.setObjectName(_fromUtf8("pushButtonLive"))
         self.horizontalLayout.addWidget(self.pushButtonLive)
         self.pushButtonStop = QtGui.QPushButton(self.centralwidget)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.pushButtonStop.setFont(font)
         self.pushButtonStop.setStyleSheet(_fromUtf8("border-width: 2px;\n"
 "border-radius: 15px;\n"
 "padding: 4px;\n"
@@ -82,6 +97,9 @@ class Ui_MainWindow(object):
         self.labelCell.setObjectName(_fromUtf8("labelCell"))
         self.verticalLayout_4.addWidget(self.labelCell)
         self.tableCell = QtGui.QTableView(self.tabLive)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.tableCell.setFont(font)
         self.tableCell.setStyleSheet(_fromUtf8(""))
         self.tableCell.setObjectName(_fromUtf8("tableCell"))
         self.verticalLayout_4.addWidget(self.tableCell)
@@ -90,6 +108,9 @@ class Ui_MainWindow(object):
         self.labelTemp.setObjectName(_fromUtf8("labelTemp"))
         self.verticalLayout_4.addWidget(self.labelTemp)
         self.tableTemp = QtGui.QTableView(self.tabLive)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.tableTemp.setFont(font)
         self.tableTemp.setStyleSheet(_fromUtf8(""))
         self.tableTemp.setObjectName(_fromUtf8("tableTemp"))
         self.verticalLayout_4.addWidget(self.tableTemp)
@@ -99,6 +120,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addWidget(self.labelMod)
         self.tableMod = QtGui.QTableView(self.tabLive)
         self.tableMod.setMaximumSize(QtCore.QSize(16777215, 160))
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.tableMod.setFont(font)
         self.tableMod.setStyleSheet(_fromUtf8(""))
         self.tableMod.setObjectName(_fromUtf8("tableMod"))
         self.verticalLayout_4.addWidget(self.tableMod)
@@ -111,12 +135,18 @@ class Ui_MainWindow(object):
         self.labelOcv.setObjectName(_fromUtf8("labelOcv"))
         self.verticalLayout_10.addWidget(self.labelOcv)
         self.tableOcv = QtGui.QTableView(self.tabCellinfo)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.tableOcv.setFont(font)
         self.tableOcv.setObjectName(_fromUtf8("tableOcv"))
         self.verticalLayout_10.addWidget(self.tableOcv)
         self.labelOhm = QtGui.QLabel(self.tabCellinfo)
         self.labelOhm.setObjectName(_fromUtf8("labelOhm"))
         self.verticalLayout_10.addWidget(self.labelOhm)
         self.tableOhm = QtGui.QTableView(self.tabCellinfo)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.tableOhm.setFont(font)
         self.tableOhm.setObjectName(_fromUtf8("tableOhm"))
         self.verticalLayout_10.addWidget(self.tableOhm)
         self.tabWidget.addTab(self.tabCellinfo, _fromUtf8(""))
@@ -129,6 +159,9 @@ class Ui_MainWindow(object):
         self.labelCAN.setObjectName(_fromUtf8("labelCAN"))
         self.verticalLayout_7.addWidget(self.labelCAN)
         self.tableCAN = QtGui.QTableView(self.tabCAN)
+        font = QtGui.QFont()
+        font.setPointSize(24)
+        self.tableCAN.setFont(font)
         self.tableCAN.setStyleSheet(_fromUtf8(""))
         self.tableCAN.setObjectName(_fromUtf8("tableCAN"))
         self.verticalLayout_7.addWidget(self.tableCAN)

@@ -93,6 +93,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableCell.setModel(self.modelCell)
         self.tableCell.horizontalHeader().setStretchLastSection(True)
         self.tableCell.horizontalHeader().resizeSections(3)
+        self.tableCell.resizeRowsToContents()
 
     def tableCellall(self, *args, **kwargs):
         query = QtSql.QSqlQuery()
@@ -121,6 +122,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableTemp.setModel(self.modelTemp)
         self.tableTemp.horizontalHeader().setStretchLastSection(True)
         self.tableTemp.horizontalHeader().resizeSections(3)
+        self.tableTemp.resizeRowsToContents()
     
     def tableTempall(self, *args, **kwargs):
         query = QtSql.QSqlQuery()
@@ -149,6 +151,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableOcv.setModel(self.modelOcv)
         self.tableOcv.horizontalHeader().setStretchLastSection(True)
         self.tableOcv.horizontalHeader().resizeSections(3)
+        self.tableOcv.resizeRowsToContents()
 
     def tableOcvall(self, *args, **kwargs):
         query = QtSql.QSqlQuery()
@@ -177,6 +180,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableOhm.setModel(self.modelOhm)
         self.tableOhm.horizontalHeader().setStretchLastSection(True)
         self.tableOhm.horizontalHeader().resizeSections(3)
+        self.tableOhm.resizeRowsToContents()
 
     def tableOhmall(self, *args, **kwargs):
         query = QtSql.QSqlQuery()
@@ -201,6 +205,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableMod.setModel(self.modelMod)
         self.tableMod.horizontalHeader().setStretchLastSection(True)
         self.tableMod.horizontalHeader().resizeSections(3)
+        self.tableMod.resizeRowsToContents()
 
     def tableModall(self, *args, **kwargs):
         query = QtSql.QSqlQuery()
@@ -228,6 +233,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableCAN.setModel(self.modelCAN)
         self.tableCAN.horizontalHeader().setStretchLastSection(True)
         self.tableCAN.horizontalHeader().resizeSections(3)
+        self.tableCAN.resizeRowsToContents()
 
     def tableCANall(self, *args, **kwargs):
         query = QtSql.QSqlQuery()
