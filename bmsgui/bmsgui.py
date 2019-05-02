@@ -22,7 +22,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         QtGui.QMainWindow.__init__(self)
         design.Ui_MainWindow.__init__(self)
         self.setupUi(self)
-        self.connectdb = False
+        self.connectdb = True
         self.logcounter = 0
         self.dbname = 'bmsdata.db'
         self.db = None
@@ -32,18 +32,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButtonDel.setEnabled(self.connectdb)
         self.pushButtonLive.setEnabled(self.connectdb)
         self.pushButtonStop.setEnabled(self.connectdb)
-        self.lineEditList = [self.lineEditTEMP_HIGH_LIMIT,
-                             self.lineEditTEMP_LOW_LIMIT,
-                             self.lineEditVOLT_HIGH_LIMIT,
-                             self.lineEditVOLT_LOW_LIMIT,
-                             self.lineEditDISCHARGE_LIMIT,
-                             self.lineEditCHARGE_LIMIT,
-                             self.lineEditTEMP_MSG_RATE,
-                             self.lineEditVOLT_MSG_RATE,
-                             self.lineEditOCV_MSG_RATE,
-                             self.lineEditIR_MSG_RATE,
-                             self.lineEditMACRO_MSG_RATE]
-
         self.tableCellinit()
         self.tableTempinit()
         self.tableOcvinit()
@@ -60,12 +48,13 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
 
         self.actionQuit.triggered.connect(self.closeEvent)
 
+        self.pushButtonLog.setVisible(False)
+        self.pushButtonDel.setVisible(False)
         self.pushButtonLog.clicked.connect(self.log)
         self.pushButtonDel.clicked.connect(self.delete)
         self.pushButtonLive.clicked.connect(self.live)
         self.pushButtonStop.clicked.connect(self.stop)
         self.pushButtonSet.clicked.connect(self.param)
-        self.pushButtonGet.clicked.connect(self.getparam)
         
         self.threadCAN = threading.Thread(target=self.threadCANrun)
         self.threadCAN.start()
@@ -96,16 +85,19 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableCell.resizeRowsToContents()
 
     def tableCellall(self, *args, **kwargs):
-        query = QtSql.QSqlQuery()
+        #query = QtSql.QSqlQuery()
         colCount = self.modelCAN.columnCount()
         for id in range(headerCellv):
             row = id
-            query.exec_("select v, date from voltage where id = '" + str(id) + "' order by date desc")
+            #query.exec_("select v, date from voltage where id = '" + str(id) +
+            #"' order by date desc")
             if PRINT:
-                print query.lastQuery()
-            query.first()
-            self.modelCell.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
-            self.modelCell.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
+                pass #print #query.lastQuery()
+            #query.first()
+                                #self.modelCell.setItem(row, 0,
+                                #QtGui.QStandardItem(str(#query.value(0).toString())))
+                                #self.modelCell.setItem(row, 1,
+                                #QtGui.QStandardItem(str(#query.value(1).toString())))
     
     def tableTempinit(self, *args, **kwargs):
         self.modelTemp = QtGui.QStandardItemModel()
@@ -125,16 +117,19 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableTemp.resizeRowsToContents()
     
     def tableTempall(self, *args, **kwargs):
-        query = QtSql.QSqlQuery()
+        #query = QtSql.QSqlQuery()
         colCount = self.modelTemp.columnCount()
         for id in range(headerTempv):
             row = id
-            query.exec_("select c, date from temperature where id = '" + str(id) + "' order by date desc")
+            #query.exec_("select c, date from temperature where id = '" +
+            #str(id) + "' order by date desc")
             if PRINT:
-                print query.lastQuery()
-            query.first()
-            self.modelTemp.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
-            self.modelTemp.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
+                pass #print #query.lastQuery()
+            #query.first()
+                                #self.modelTemp.setItem(row, 0,
+                                #QtGui.QStandardItem(str(#query.value(0).toString())))
+                                #self.modelTemp.setItem(row, 1,
+                                #QtGui.QStandardItem(str(#query.value(1).toString())))
 
     def tableOcvinit(self, *args, **kwargs):
         self.modelOcv = QtGui.QStandardItemModel()
@@ -154,16 +149,19 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableOcv.resizeRowsToContents()
 
     def tableOcvall(self, *args, **kwargs):
-        query = QtSql.QSqlQuery()
+        #query = QtSql.QSqlQuery()
         colCount = self.modelOcv.columnCount()
         for id in range(headerCellv):
             row = id
-            query.exec_("select v, date from ocv where id = '" + str(id) + "' order by date desc")
+            #query.exec_("select v, date from ocv where id = '" + str(id) + "'
+            #order by date desc")
             if PRINT:
-                print query.lastQuery()
-            query.first()
-            self.modelOcv.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
-            self.modelOcv.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
+                pass #print #query.lastQuery()
+            #query.first()
+                                #self.modelOcv.setItem(row, 0,
+                                #QtGui.QStandardItem(str(#query.value(0).toString())))
+                                #self.modelOcv.setItem(row, 1,
+                                #QtGui.QStandardItem(str(#query.value(1).toString())))
 
     def tableOhminit(self, *args, **kwargs):
         self.modelOhm = QtGui.QStandardItemModel()
@@ -183,16 +181,19 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableOhm.resizeRowsToContents()
 
     def tableOhmall(self, *args, **kwargs):
-        query = QtSql.QSqlQuery()
+        #query = QtSql.QSqlQuery()
         colCount = self.modelOhm.columnCount()
         for id in range(headerCellv):
             row = id
-            query.exec_("select mohm, date from ir where id = '" + str(id) + "' order by date desc")
+            #query.exec_("select mohm, date from ir where id = '" + str(id) +
+            #"' order by date desc")
             if PRINT:
-                print query.lastQuery()
-            query.first()
-            self.modelOhm.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
-            self.modelOhm.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
+                pass #print #query.lastQuery()
+            #query.first()
+                                #self.modelOhm.setItem(row, 0,
+                                #QtGui.QStandardItem(str(#query.value(0).toString())))
+                                #self.modelOhm.setItem(row, 1,
+                                #QtGui.QStandardItem(str(#query.value(1).toString())))
 
     def tableModinit(self, *args, **kwargs):
         self.modelMod = QtGui.QStandardItemModel()
@@ -208,15 +209,18 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableMod.resizeRowsToContents()
 
     def tableModall(self, *args, **kwargs):
-        query = QtSql.QSqlQuery()
+        #query = QtSql.QSqlQuery()
         for id in dbModID:
             row = dbModID.index(id)
-            query.exec_("select v, date from macro where id = '" + str(id) + "' order by date desc")
+            #query.exec_("select v, date from macro where id = '" + str(id) +
+            #"' order by date desc")
             if PRINT:
-                print query.lastQuery()
-            query.first()
-            self.modelMod.setItem(row, 0, QtGui.QStandardItem(str(query.value(0).toString())))
-            self.modelMod.setItem(row, 1, QtGui.QStandardItem(str(query.value(1).toString())))
+                pass #print #query.lastQuery()
+            #query.first()
+                                #self.modelMod.setItem(row, 0,
+                                #QtGui.QStandardItem(str(#query.value(0).toString())))
+                                #self.modelMod.setItem(row, 1,
+                                #QtGui.QStandardItem(str(#query.value(1).toString())))
 
     def tableCANinit(self, *args, **kwargs):
         self.modelCAN = QtGui.QStandardItemModel()
@@ -236,16 +240,18 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.tableCAN.resizeRowsToContents()
 
     def tableCANall(self, *args, **kwargs):
-        query = QtSql.QSqlQuery()
+        #query = QtSql.QSqlQuery()
         colCount = self.modelCAN.columnCount()
         for id in headerCANv:
             row = headerCANv.index(id)
-            query.exec_("select len, b0, b1, b2, b3, b4, b5, b6, b7, date from candata where id = '" + id[2:] + "' order by date desc")
+            #query.exec_("select len, b0, b1, b2, b3, b4, b5, b6, b7, date from
+            #candata where id = '" + id[2:] + "' order by date desc")
             if PRINT:
-                print query.lastQuery()
-            query.first()
-            for col in range(colCount):
-                self.modelCAN.setItem(row, col, QtGui.QStandardItem(str(query.value(col).toString())))
+                pass #print #query.lastQuery()
+            #query.first()
+                                #for col in range(colCount):
+                #self.modelCAN.setItem(row, col,
+                                    #QtGui.QStandardItem(str(#query.value(col).toString())))
 
     def DBinit(self, *args, **kwargs):
         if self.db is not None:
@@ -262,49 +268,65 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
             self.db = None
             return
         if new:
-            query = QtSql.QSqlQuery()
-            query.exec_("create table candata(date text primary key, id text, len text, b0 text, b1 text, b2 text, b3 text, b4 text, b5 text, b6 text, b7 text)")
+            #query = QtSql.QSqlQuery()
+            #query.exec_("create table candata(date text primary key, id text,
+            #len text, b0 text, b1 text, b2 text, b3 text, b4 text, b5 text, b6
+            #text, b7 text)")
             if PRINT:
-                print query.lastQuery()
-            query.exec_("create table voltage(date text primary key, id text, v text)")
+                pass #print #query.lastQuery()
+            #query.exec_("create table voltage(date text primary key, id text,
+                                #v text)")
             if PRINT:
-                print query.lastQuery()
-            query.exec_("create table temperature(date text primary key, id text, c text)")
+                pass #print #query.lastQuery()
+            #query.exec_("create table temperature(date text primary key, id
+                                #text, c text)")
             if PRINT:
-                print query.lastQuery()
-            query.exec_("create table ocv(date text primary key, id text, v text)")
+                pass #print #query.lastQuery()
+            #query.exec_("create table ocv(date text primary key, id text, v
+                                #text)")
             if PRINT:
-                print query.lastQuery()
-            query.exec_("create table ir(date text primary key, id text, mohm text)")
+                pass #print #query.lastQuery()
+            #query.exec_("create table ir(date text primary key, id text, mohm
+                                #text)")
             if PRINT:
-                print query.lastQuery()
-            query.exec_("create table macro(date text primary key, id text, v text)")
+                pass #print #query.lastQuery()
+            #query.exec_("create table macro(date text primary key, id text, v
+                                #text)")
             if PRINT:
-                print query.lastQuery()
+                pass #print #query.lastQuery()
             for id in headerCANv:
-                query.exec_("insert into candata values('1776-07-04 00:00:0" + str(headerCANv.index(id)) + ".000000', '" + id[2:] + "', '8', '0xFF', '0xFF', '0xFF', '0xFF', '0xFF', '0xFF', '0xFF', '0xFF')")
+                #query.exec_("insert into candata values('1776-07-04 00:00:0" +
+                #str(headerCANv.index(id)) + ".000000', '" + id[2:] + "', '8',
+                #'0xFF', '0xFF', '0xFF', '0xFF', '0xFF', '0xFF', '0xFF',
+                #'0xFF')")
                 if PRINT:
-                    print query.lastQuery()
+                    pass #print #query.lastQuery()
             for id in range(headerCellv):
-                query.exec_("insert into voltage values('1776-07-04 00:00:" + "%02d" % id + ".000000', '" + str(id) + "', '0xFF')")
+                #query.exec_("insert into voltage values('1776-07-04 00:00:" +
+                #"%02d" % id + ".000000', '" + str(id) + "', '0xFF')")
                 if PRINT:
-                    print query.lastQuery()
+                    pass #print #query.lastQuery()
             for id in range(headerTempv):
-                query.exec_("insert into temperature values('1776-07-04 00:00:" + "%02d" % id + ".000000', '" + str(id) + "', '0xFF')")
+                #query.exec_("insert into temperature values('1776-07-04
+                #00:00:" + "%02d" % id + ".000000', '" + str(id) + "',
+                #'0xFF')")
                 if PRINT:
-                    print query.lastQuery()
+                    pass #print #query.lastQuery()
             for id in range(headerCellv):
-                query.exec_("insert into ocv values('1776-07-04 00:00:" + "%02d" % id + ".000000', '" + str(id) + "', '0xFF')")
+                #query.exec_("insert into ocv values('1776-07-04 00:00:" +
+                #"%02d" % id + ".000000', '" + str(id) + "', '0xFF')")
                 if PRINT:
-                    print query.lastQuery()
+                    pass #print #query.lastQuery()
             for id in range(headerCellv):
-                query.exec_("insert into ir values('1776-07-04 00:00:" + "%02d" % id + ".000000', '" + str(id) + "', '0xFF')")
+                #query.exec_("insert into ir values('1776-07-04 00:00:" +
+                #"%02d" % id + ".000000', '" + str(id) + "', '0xFF')")
                 if PRINT:
-                    print query.lastQuery()
+                    pass #print #query.lastQuery()
             for id in dbModID:
-                query.exec_("insert into macro values('1776-07-04 00:00:" + str(dbModID.index(id)) + ".000000', '" + id + "', '0xFF')")
+                #query.exec_("insert into macro values('1776-07-04 00:00:" +
+                #str(dbModID.index(id)) + ".000000', '" + id + "', '0xFF')")
                 if PRINT:
-                    print query.lastQuery()
+                    pass #print #query.lastQuery()
         self.connectdb = True
 
     def log(self, *args, **kwargs):
@@ -332,20 +354,6 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         
     def live(self, *args, **kwargs):
         global state, queue, ser
-        msg = 'T620802' #2:Config
-        config = self.checkBoxCellVolt.isChecked()
-        config += (0x1 << 1) * self.checkBoxCellTemp.isChecked()
-        config += (0x1 << 2) * self.checkBoxPackVol.isChecked()
-        config += (0x1 << 3) * self.checkBoxPackCur.isChecked()
-        config += (0x1 << 4) * self.checkBoxMod.isChecked()
-        config = hex(config)[2:]
-        if len(config) == 1:
-            config = '0' + config
-        msg += config + '000000000000\r'
-        if not DEBUG:
-            ser.write(msg)
-        if PRINT:
-            print msg
         state = LIVE
         queue = []
         self.labelState.setText(labelStates[state])
@@ -358,6 +366,7 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         global state, ser
         msg = 'T62080300000000000000\r'
         if not DEBUG:
+            ser.write("\r\r\r")
             ser.write(msg)
         if PRINT:
             print msg
@@ -370,45 +379,16 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
         self.pushButtonStop.setEnabled(not self.connectdb)
 
     def param(self, *args, **kwargs):
-        def valid(input):
-            try:
-                if len(hex(int(input))) > 6:
-                    return False
-            except Exception:
-                return False
-            return True
-        if state != 0:
-            msg = 'T620804' #2:config
-            config = self.checkBoxCellVolt.isChecked()
-            config += (0x1 << 1) * self.checkBoxCellTemp.isChecked()
-            config += (0x1 << 2) * self.checkBoxPackVol.isChecked()
-            config += (0x1 << 3) * self.checkBoxPackCur.isChecked()
-            config += (0x1 << 4) * self.checkBoxMod.isChecked()
-            config = hex(config)[2:]
-            if len(config) == 1:
-                config = '0' + config
-            msg += config + '000000000000\r'
-            for i in self.lineEditList:
-                if not valid(i.text()):
-                    i.setText('Invalid')
-                    return
-            if int(self.lineEditTEMP_HIGH_LIMIT.text()) <= int(self.lineEditTEMP_LOW_LIMIT.text()):
-                self.lineEditTEMP_LOW_LIMIT.setText('Invalid')
-                return     
-            if int(self.lineEditVOLT_HIGH_LIMIT.text()) <= int(self.lineEditVOLT_LOW_LIMIT.text()):
-                self.lineEditVOLT_LOW_LIMIT.setText('Invalid')
-                return
-            if not DEBUG:
-                ser.write(msg)
-            start = 'T6213'
-            for i in range(len(self.lineEditList)):
-                m = start + "{0:0{1}x}".format(i, 2) + "{0:0{1}x}".format(int(self.lineEditList[i].text()), 2)
-                if DEBUG:
-                    print m
-                else:
-                    ser.write(m)
-            if PRINT:
-                print msg
+        global ser
+        start = "T"
+        start += "0" * (3 - len(self.lineEditID.text())) + self.lineEditID.text()
+        start += str(self.lineEditLEN.text())
+        start += self.lineEditDATA.text()
+        if len(self.lineEditDATA.text()) < 2 * int(self.lineEditLEN.text()):
+            start += "0" * (2 * int(self.lineEditLEN.text()) - len(self.lineEditDATA.text()))
+        #ser.write("\r\r\r")
+        ser.write(str(start))
+        print start
 
     def getparam(self, *args, **kwargs):
         if state != 0:
@@ -420,11 +400,172 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 else:
                     ser.write(m)
 
+    def update():
+        print 1
+        global state, ser, queue
+        if (state == LIVE) and (len(queue) > 0):
+            #query = QtSql.QSqlQuery()
+            temp = queue
+            queue = []
+            for entry in temp:
+                date = entry[0]
+                msg = entry[1]
+                m_id = msg[0:3]
+                m_len = msg[3:4]
+                m_message = msg[4:]
+                if m_len == '03':
+                    msg = [m_message[0], m_message[1:2]]
+                else:
+                    msg = [m_message[i:i + 2] for i in range(0, len(m_message), 2)]
+                if len(msg) < 8:
+                    msg += ['0xXX'] * (8 - len(msg))
+                if '0x' + m_id in headerCANv:
+                    """
+                    #query.prepare("insert into candata (date, id, len, b0, b1, b2, b3, b4, b5, b6, b7) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+                    #query.addBindValue(date)
+                    #query.addBindValue(m_id)
+                    #query.addBindValue(m_len)
+                    #query.addBindValue('0x' + msg[0])
+                    #query.addBindValue('0x' + msg[1])
+                    #query.addBindValue('0x' + msg[2])
+                    #query.addBindValue('0x' + msg[3])
+                    #query.addBindValue('0x' + msg[4])
+                    #query.addBindValue('0x' + msg[5])
+                    #query.addBindValue('0x' + msg[6])
+                    #query.addBindValue('0x' + msg[7])
+                    #query.exec_()
+                    """
+                # immediate write to modelCAN
+                
+                    row = headerCANv.index('0x' + m_id)
+                    self.modelCAN.setItem(row, 9, QtGui.QStandardItem(date))
+                    self.modelCAN.setItem(row, 0, QtGui.QStandardItem(m_len))
+                    for i in range(1, 9):
+                        self.modelCAN.setItem(row, i, QtGui.QStandardItem('0x' + msg[i - 1]))
+
+                if PRINT:
+                    print "insert into candata", entry
+
+                # voltage
+                if m_id == headerCANv[0][2:]:
+                    b0 = int('0x' + msg[0], 0)
+                    b1 = int('0x' + msg[1], 0)
+                    c = b0 * cellsPERslave + b1 * dataPERmsg
+                    for f in range(1, 1 + dataPERmsg):
+                        d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0)*.0001)]
+                        
+                        #query.prepare("insert into voltage (date, id, v)
+                        #values (?, ?, ?)")
+                        #query.addBindValue(d[0])
+                        #query.addBindValue(d[1])
+                        #query.addBindValue(d[2])
+                        #query.exec_()
+                        
+                        # immediate write to modelCell
+                        self.modelCell.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
+                        self.modelCell.setItem(int(d[1]), 1, QtGui.QStandardItem(d[0]))
+                        if PRINT:
+                            print "insert into voltage", d
+                # temp
+                if m_id == headerCANv[1][2:]:
+                    b0 = int('0x' + msg[0], 0)
+                    b1 = int('0x' + msg[1], 0)
+                    c = b0 * (headerTempv / slaveNum) + b1
+                    for f in range(1, 1 + min(dataPERmsg, headerTempv / slaveNum)):
+                        d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0)*0.1)]
+                        #query.prepare("insert into temperature (date, id,
+                        #c) values (?, ?, ?)")
+                        #query.addBindValue(d[0])
+                        #query.addBindValue(d[1])
+                        #query.addBindValue(d[2])
+                        #query.exec_()
+
+                        # immediate write to modelTemp
+                        self.modelTemp.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
+                        self.modelTemp.setItem(int(d[1]), 1, QtGui.QStandardItem(d[0]))
+
+                        if PRINT:
+                            print "insert into temp", d
+                # ocv
+                if m_id == headerCANv[2][2:]:
+                    b0 = int('0x' + msg[0], 0)
+                    b1 = int('0x' + msg[1], 0)
+                    c = b0 * cellsPERslave + b1 * dataPERmsg
+                    for f in range(1, 1 + dataPERmsg):
+                        d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0)*.0001)]
+                        #query.prepare("insert into ocv (date, id, v)
+                        #values (?, ?, ?)")
+                        #query.addBindValue(d[0])
+                        #query.addBindValue(d[1])
+                        #query.addBindValue(d[2])
+                        #query.exec_()
+
+                        # immediate write to modelOcv
+                        self.modelOcv.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
+                        self.modelOcv.setItem(int(d[1]), 1, QtGui.QStandardItem(d[0]))
+
+                        if PRINT:
+                            print "insert into ocv", d
+                # ohm
+                if m_id == headerCANv[3][2:]:
+                    b0 = int('0x' + msg[0], 0)
+                    b1 = int('0x' + msg[1], 0)
+                    c = b0 * cellsPERslave + b1 * dataPERmsg
+                    for f in range(1, 1 + dataPERmsg):
+                        d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0)*0.001)]
+                        #query.prepare("insert into ir (date, id, mohm)
+                        #values (?, ?, ?)")
+                        #query.addBindValue(d[0])
+                        #query.addBindValue(d[1])
+                        #query.addBindValue(d[2])
+                        #query.exec_()
+
+                        # immediate write to modelOhm
+                        self.modelOhm.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
+                        self.modelOhm.setItem(int(d[1]), 1, QtGui.QStandardItem(d[0]))
+
+                        if PRINT:
+                            print "insert into ir", d
+                # mod
+                if m_id == headerCANv[5][2:]:
+                    soc = int('0x' + msg[0], 0)
+                    pvol = int('0x' + msg[1] + msg[2] + msg[3], 0)
+                    pcur = int('0x' + msg[4] + msg[5], 0)
+                    g = [soc, pvol, pcur]
+                    for f in range(3):
+                        d = [date[:-1] + str(f), dbModID[f], g[f]]
+                        #query.prepare("insert into macro (date, id, v)
+                        #values (?, ?, ?)")
+                        #query.addBindValue(d[0])
+                        #query.addBindValue(d[1])
+                        #query.addBindValue(d[2])
+                        #query.exec_()
+                        if f == 0:
+                            d[2] = str(d[2]*0.5) + "%"
+                        elif f == 1:
+                            d[2] = d[2]*.0001
+                        elif f == 2:
+                            d[2] = d[2]*0.1
+                        # immediate write to modelMod
+                        self.modelMod.setItem(dbModID.index(d[1]), 0, QtGui.QStandardItem(str(d[2])))
+                        self.modelMod.setItem(dbModID.index(d[1]), 1, QtGui.QStandardItem(d[0]))
+
+                        if PRINT:
+                            print "insert into macro", d
+                # ack
+                if m_id == headerCANv[7][2:]:
+                    # might not need to set enable
+                    #self.pushButtonSet.setEnabled(True)
+                    pass
+
+                # param
+                if m_id == headerCANv[8][2:]:
+                    self.lineEditList[int(msg[0])].setText(str(int(msg[1], 16)))
     def threadCANrun(self, *args, **kwargs):
-        def update():
+        def uupdate():
             global state, ser, queue
             if (state == LIVE) and (len(queue) > 0):
-                query = QtSql.QSqlQuery()
+                #query = QtSql.QSqlQuery()
                 temp = queue
                 queue = []
                 for entry in temp:
@@ -436,24 +577,24 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                     if m_len == '03':
                         msg = [m_message[0], m_message[1:2]]
                     else:
-                        msg = [m_message[i:i+2] for i in range(0, len(m_message), 2)]
+                        msg = [m_message[i:i + 2] for i in range(0, len(m_message), 2)]
                     if len(msg) < 8:
                         msg += ['0xXX'] * (8 - len(msg))
                     if '0x' + m_id in headerCANv:
                         """
-                        query.prepare("insert into candata (date, id, len, b0, b1, b2, b3, b4, b5, b6, b7) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-                        query.addBindValue(date)
-                        query.addBindValue(m_id)
-                        query.addBindValue(m_len)
-                        query.addBindValue('0x' + msg[0])
-                        query.addBindValue('0x' + msg[1])
-                        query.addBindValue('0x' + msg[2])
-                        query.addBindValue('0x' + msg[3])
-                        query.addBindValue('0x' + msg[4])
-                        query.addBindValue('0x' + msg[5])
-                        query.addBindValue('0x' + msg[6])
-                        query.addBindValue('0x' + msg[7])
-                        query.exec_()
+                        #query.prepare("insert into candata (date, id, len, b0, b1, b2, b3, b4, b5, b6, b7) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+                        #query.addBindValue(date)
+                        #query.addBindValue(m_id)
+                        #query.addBindValue(m_len)
+                        #query.addBindValue('0x' + msg[0])
+                        #query.addBindValue('0x' + msg[1])
+                        #query.addBindValue('0x' + msg[2])
+                        #query.addBindValue('0x' + msg[3])
+                        #query.addBindValue('0x' + msg[4])
+                        #query.addBindValue('0x' + msg[5])
+                        #query.addBindValue('0x' + msg[6])
+                        #query.addBindValue('0x' + msg[7])
+                        #query.exec_()
                         """
                     # immediate write to modelCAN
                 
@@ -472,13 +613,14 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         b1 = int('0x' + msg[1], 0)
                         c = b0 * cellsPERslave + b1 * dataPERmsg
                         for f in range(1, 1 + dataPERmsg):
-                            d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0))]
+                            d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0)*.0001)]
                         
-                            query.prepare("insert into voltage (date, id, v) values (?, ?, ?)")
-                            query.addBindValue(d[0])
-                            query.addBindValue(d[1])
-                            query.addBindValue(d[2])
-                            query.exec_()
+                            #query.prepare("insert into voltage (date, id, v)
+                            #values (?, ?, ?)")
+                            #query.addBindValue(d[0])
+                            #query.addBindValue(d[1])
+                            #query.addBindValue(d[2])
+                            #query.exec_()
                         
                             # immediate write to modelCell
                             self.modelCell.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
@@ -491,31 +633,33 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         b1 = int('0x' + msg[1], 0)
                         c = b0 * (headerTempv / slaveNum) + b1
                         for f in range(1, 1 + min(dataPERmsg, headerTempv / slaveNum)):
-                            d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0))]
-                            query.prepare("insert into temperature (date, id, c) values (?, ?, ?)")
-                            query.addBindValue(d[0])
-                            query.addBindValue(d[1])
-                            query.addBindValue(d[2])
-                            query.exec_()
+                            d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0)*0.1)]
+                            #query.prepare("insert into temperature (date, id,
+                            #c) values (?, ?, ?)")
+                            #query.addBindValue(d[0])
+                            #query.addBindValue(d[1])
+                            #query.addBindValue(d[2])
+                            #query.exec_()
 
                             # immediate write to modelTemp
                             self.modelTemp.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
                             self.modelTemp.setItem(int(d[1]), 1, QtGui.QStandardItem(d[0]))
 
                             if PRINT:
-                                print "insert into voltage", d
+                                print "insert into temp", d
                     # ocv
                     if m_id == headerCANv[2][2:]:
                         b0 = int('0x' + msg[0], 0)
                         b1 = int('0x' + msg[1], 0)
                         c = b0 * cellsPERslave + b1 * dataPERmsg
                         for f in range(1, 1 + dataPERmsg):
-                            d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0))]
-                            query.prepare("insert into ocv (date, id, v) values (?, ?, ?)")
-                            query.addBindValue(d[0])
-                            query.addBindValue(d[1])
-                            query.addBindValue(d[2])
-                            query.exec_()
+                            d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0)*.0001)]
+                            #query.prepare("insert into ocv (date, id, v)
+                            #values (?, ?, ?)")
+                            #query.addBindValue(d[0])
+                            #query.addBindValue(d[1])
+                            #query.addBindValue(d[2])
+                            #query.exec_()
 
                             # immediate write to modelOcv
                             self.modelOcv.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
@@ -529,12 +673,13 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         b1 = int('0x' + msg[1], 0)
                         c = b0 * cellsPERslave + b1 * dataPERmsg
                         for f in range(1, 1 + dataPERmsg):
-                            d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0))]
-                            query.prepare("insert into ir (date, id, mohm) values (?, ?, ?)")
-                            query.addBindValue(d[0])
-                            query.addBindValue(d[1])
-                            query.addBindValue(d[2])
-                            query.exec_()
+                            d = [date[:-1] + str(f), str(c + f - 1), str(int('0x' + msg[2 * f] + msg[2 * f + 1], 0)*0.001)]
+                            #query.prepare("insert into ir (date, id, mohm)
+                            #values (?, ?, ?)")
+                            #query.addBindValue(d[0])
+                            #query.addBindValue(d[1])
+                            #query.addBindValue(d[2])
+                            #query.exec_()
 
                             # immediate write to modelOhm
                             self.modelOhm.setItem(int(d[1]), 0, QtGui.QStandardItem(d[2]))
@@ -545,17 +690,23 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                     # mod
                     if m_id == headerCANv[5][2:]:
                         soc = int('0x' + msg[0], 0)
-                        pvol = int('0x' + msg[1] + msg[2], 0)
-                        pcur = int('0x' + msg[3] + msg[4], 0)
+                        pvol = int('0x' + msg[1] + msg[2] + msg[3], 0)
+                        pcur = int('0x' + msg[4] + msg[5], 0)
                         g = [soc, pvol, pcur]
                         for f in range(3):
                             d = [date[:-1] + str(f), dbModID[f], g[f]]
-                            query.prepare("insert into macro (date, id, v) values (?, ?, ?)")
-                            query.addBindValue(d[0])
-                            query.addBindValue(d[1])
-                            query.addBindValue(d[2])
-                            query.exec_()
-
+                            #query.prepare("insert into macro (date, id, v)
+                            #values (?, ?, ?)")
+                            #query.addBindValue(d[0])
+                            #query.addBindValue(d[1])
+                            #query.addBindValue(d[2])
+                            #query.exec_()
+                            if f == 0:
+                                d[2] = str(d[2] * 0.5) + "%"
+                            elif f == 1:
+                                d[2] = d[2] * .0001
+                            elif f == 2:
+                                d[2] = d[2] * 0.1
                             # immediate write to modelMod
                             self.modelMod.setItem(dbModID.index(d[1]), 0, QtGui.QStandardItem(str(d[2])))
                             self.modelMod.setItem(dbModID.index(d[1]), 1, QtGui.QStandardItem(d[0]))
@@ -569,14 +720,15 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         pass
 
                     # param
-                    if m_id == headerCANv[8][2:]:
-                        self.lineEditList[int(msg[0])].setText(str(int(msg[1], 16)))
+                    #if m_id == headerCANv[8][2:]:
+                    #    self.lineEditList[int(msg[0])].setText(str(int(msg[1],
+                    #    16)))
         global state, ser, queue
         i = 0
         if DEBUG:
-            with open('test0hex.txt') as f:
-                test0hex = f.read().split('\n')
-            test0hexlen = len(test0hex)
+            #with open('test0hex.txt') as f:
+            #    test0hex = f.read().split('\n')
+            #test0hexlen = len(test0hex)
             c = 0
             #print 'here'
             #print test0hexlen
@@ -587,9 +739,10 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                 if state == CLOSE:
                     return
                 ser = serial.Serial('COM3', baudrate=5000000, timeout=None)
+                ser.write("\r\r\r")
                 ser.write('S6\r')   # CAN Baudrate set to 500k
                 ser.write('O\r')    # Open CANdapter
-                if (state == DISCONNECT) and self.connectdb:
+                if (state == DISCONNECT):# and self.connectdb:
                     if state == CLOSE:
                         return
                     state = IDLE
@@ -618,8 +771,12 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                             print(str(in_wait) + " !!!!")
                         except Exception as e:
                             pass
-                            #print e
+                    #time.sleep(0.1)
+                    if len(queue) > 5:
+                        uupdate()
+
             except Exception as e:
+                print e
                 # print 'len(queue): ' + str(len(queue))
                 if DEBUG:
                     if state == LIVE:
@@ -658,8 +815,8 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         elif 11 == (i % 13):
                             queue.append([str(datetime.datetime.now()), '60A8' + '%016d' % (random.randint(0, 10000000000000000))])
                         else:
-                            queue.append([str(datetime.datetime.now()), '60D3' + '00' + '%02d' % (random.randint(0, 100))])
-                    if state == LOG:
+                            queue.append([str(datetime.datetime.now()), '60D3' + '0000' + '%02d' % (random.randint(0, 100))])
+                    """if state == LOG:
                         if c == 0:
                             queue.append([str(datetime.datetime.now()), '60C1' + '01'])
                         if c < test0hexlen:
@@ -668,11 +825,12 @@ class MyApp(QtGui.QMainWindow, design.Ui_MainWindow):
                         else:
                             queue.append([str(datetime.datetime.now()), '60C1' + '02'])
                             c = 0 # demo only works with one log
-                            time.sleep(0.5)
-                    update()
+                            time.sleep(0.5)"""
+                    uupdate()
                 i += 1
                 time.sleep(0.2)
-                #queue.append([str(datetime.datetime.now()), '60C8' + '0200000000000000'])
+                #queue.append([str(datetime.datetime.now()), '60C8' +
+                #'0200000000000000'])
                 if state == CLOSE:
                     return
 
