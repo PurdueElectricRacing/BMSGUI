@@ -1,13 +1,6 @@
 
-.vs/bmsgui/v15/.suo
-bmsgui.sln
-bmsgui/.vs/bmsgui/v15/.suo
-*.pyc
-*.pyproj
-*.db
-*.log
-*.opendb
-*.db
-bmsgui/bmsdata.db
-*.db-journal
-bmsgui/bmsdata.db
+!.gitignore
+node_modules/
+node_modules/*
+.vscode/
+.vscode/*
