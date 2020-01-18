@@ -1,2 +1,2 @@
 # BMSGUI
-Battery Management System Graphical User Interface
+Battery management system graphical user interface
