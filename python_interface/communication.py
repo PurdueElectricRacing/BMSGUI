@@ -7,25 +7,27 @@ import gc
 import time
 from canard import can
 from canard.hw import socketcan
+import pytalk
+
 
 port = None
 return_msg = ''
 
 messages = {'0x605': 'volt_id',
-'temp_msg': '0x606',
-'ocv_msg': '0x607',
-'resistance_msg': '0x608',
-'error_msg': '0x609'
+'0x606': 'temp_msg',
+'0x607': 'ocv_msg',
+'0x608': 'resistance_msg',
+'0x609': 'error_msg'
 }
 
 
-@pytalk_method('getdata')
-def getData(self):
+@pytalk_emit('datarcv', 'getdata')
+def getData():
     return return_msg
 
 
 @pytalk_method('findport')
-def findPort(self):
+def findPort():
     if sys.platform.startswith('win'):
       ports = ['COM%s' % (i + 1) for i in range(256)]
     elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
@@ -37,14 +39,14 @@ def findPort(self):
 
     for index in ports:
       if index is not None:
-        self.port = index
+        port = index
 
 
 @pytalk_method('run')
-def run(self):
+def run():
 
   # dev = socketcan.SocketCanDev("can0")
-  bus = socketcan.SocketCanDev(findPort(self))
+  bus = socketcan.SocketCanDev(findPort())
 
   bus.start()
 
@@ -54,18 +56,19 @@ def run(self):
     msg_start, msg_end = int(_[37], base=16), int(_[64], base=16)
     data = msg[msg_start:msg_end]
     if data in messages.keys():
-        self.return_val = (data, messages.get(data))
+        return_val = (data, messages.get(data))
+        getData()
 
 
 
 @pytalk_method('send')
-def send(self, msg_data):
-    bus = socketcan.SocketCanDev(findPort(self))
+def send(msg_id, msg_data):
+    bus = socketcan.SocketCanDev(findPort())
     # bus = can.interface.Bus()
 
-    msg = can.Message(arbitration_id=0xc0ffee,
-                      data=[0, 25, 0, 1, 3, 1, 4, 1],    #example
-                      is_extended_id=True)
+    msg = can.Message(arbitration_id=msg_id,
+                      data= msg_data,    #example
+                             )
 
     try:
         bus.send(msg)
