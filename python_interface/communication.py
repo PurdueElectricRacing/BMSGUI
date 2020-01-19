@@ -15,7 +15,6 @@ return_msg = 0
 
 # messages = {'0x605': 'volt_id',
 # '0x606': 'temp_msg',
-# '0x607': 'ocv_msg',
 # '0x608': 'resistance_msg',
 # '0x609': 'error_msg'
 # }
