@@ -1,21 +1,21 @@
 var cells = {}
 
-function parseMsg(String header, int data) {
+function parseMsg(header, data) {
   switch (header)
   {
     case "volt_id":
-        String row = data[1]
-        int volt_reading = (data[3] + data[2] << 8)
+        var row = data[1]
+        var volt_reading = (data[3] + data[2] << 8)
         cells[row] = volt_reading
         return [row, volt_reading];
 
     case "temp_msg":
-        String site = data[1]
-        int temp_reading = (data[3] + data[2] << 8)
+        var site = data[1]
+        var temp_reading = (data[3] + data[2] << 8)
         return [site, temp_reading]
 
     case "error_msg":
-        error_msg_bank = []
+        var error_msg_bank = []
         error_msg_names = ['COC', 'DOC', 'Overvolt', 'Undervolt', 'Overtemp', 'Undertemp']
         for bit in data:
             if(bit == 0)
@@ -30,7 +30,7 @@ function parseMsg(String header, int data) {
   }
 
 function get_total_voltage() {
-    int nom_voltage = 0;
+    var nom_voltage = 0;
     for (var series_voltage in cells) {
         nom_voltage += series_voltage;
     }
