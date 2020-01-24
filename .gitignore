@@ -1,0 +1,6 @@
+!.gitignore
+./node_modules
+./node_modules/*
+./python_interface
+./.vscode
+./.vscode/*
