@@ -29,28 +29,28 @@ function recieve(){
 
 
 
-
 function init_connection(){
 
         platform = process.platform;
 
-         if platform.startswith('win'){
+        if platform.startsWith('win'){
             ports = ['COM%s' % (i + 1) for i in range(256)];
-         }
-         else if platform.startswith('linux') or platform.startswith('cygwin'){
+        }
+        else if platform.startsWith('linux') or platform.startsWith('cygwin'){
             ports = glob("/dev/tty[A-Za-z]*")
-         }
-         else if platform.startswith('darwin'){
-            ports = glob.glob('/dev/tty.*');
+        }
+        else if platform.startsWith('darwin'){
             ports = glob("/dev/tty.*")
-         }
-         else:
+        }
+        else{
             console.log('Unsupported platform');
+        }
 
-         for (var index in ports){
-            if (index !== null)
-                port = index
-         }
+        for (var index in ports){
+            if (index !== null){
+                port = index;
+            }
+        }
 
 
 //      console.log(await CANPort.listSerialPorts());
