@@ -17,11 +17,12 @@ function parseMsg(header, data) {
     case "error_msg":
         var error_msg_bank = []
         error_msg_names = ['COC', 'DOC', 'Overvolt', 'Undervolt', 'Overtemp', 'Undertemp']
-        for (var bit in data):
+        for (var bit in data){
             if(bit == 0)
             {
                 error_msg_bank.push(error_msg_names[bit]);
             }
+        }
 
         return error_msg_bank;
 
