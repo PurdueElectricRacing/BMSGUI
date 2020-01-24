@@ -17,7 +17,7 @@ function parseMsg(header, data) {
     case "error_msg":
         var error_msg_bank = []
         error_msg_names = ['COC', 'DOC', 'Overvolt', 'Undervolt', 'Overtemp', 'Undertemp']
-        for bit in data:
+        for (var bit in data):
             if(bit == 0)
             {
                 error_msg_bank.push(error_msg_names[bit]);
@@ -47,3 +47,4 @@ function get_total_voltage() {
 //5: Undertemp
 //6: reserved
 //7: reserved
+
