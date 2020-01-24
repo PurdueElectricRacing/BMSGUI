@@ -6,8 +6,10 @@ const serial = require('serialport');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const CANport = canable.CANPort;
+const hand = require('./can-handler');
 
 usb.startMonitoring();
+hand.init_connection();
 
 // @brief: find serial devices and return list of available ports
 async function initCanable() 

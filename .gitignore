@@ -1,5 +1,4 @@
-./node_modules
-./node_modules/*
-./python_interface
-./.vscode
-./.vscode/*
+node_modules
+python_interface
+.vscode
+package-lock.json
