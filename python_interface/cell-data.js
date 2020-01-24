@@ -38,6 +38,7 @@ function get_total_voltage() {
 
     return nom_voltage;
 }
+}
 
 // ERROR MSGS::: ALL ARE ACTIVE LOW
 //0: COC
