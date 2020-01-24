@@ -4,6 +4,7 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const http = require('http');
 
+
 http.createServer().listen(8008, 'localhost');
 
 var worker = pytalk.worker('./python_interface/communication.py');

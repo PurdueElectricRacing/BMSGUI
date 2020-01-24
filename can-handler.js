@@ -34,13 +34,17 @@ function init_connection(){
         platform = process.platform;
 
         if platform.startsWith('win'){
-            ports = ['COM%s' % (i + 1) for i in range(256)];
+            var ports = []
+
+            for (var i = 0; i<256; i++){
+                ports.push('COM%s' % (i + 1))
+            }
         }
         else if platform.startsWith('linux') or platform.startsWith('cygwin'){
-            ports = glob("/dev/tty[A-Za-z]*")
+            ports = glob("/dev/tty[A-Za-z]*");
         }
         else if platform.startsWith('darwin'){
-            ports = glob("/dev/tty.*")
+            ports = glob("/dev/tty.*");
         }
         else{
             console.log('Unsupported platform');

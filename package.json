@@ -22,7 +22,8 @@
   "dependencies": {
     "bootstrap": "^4.4.1",
     "electron": "^7.1.9",
-    "pytalk": "^1.0.5"
+    "pytalk": "^1.0.5",
+    "usb-detection": "^4.7.0"
   },
   "devDependencies": {}
 }
