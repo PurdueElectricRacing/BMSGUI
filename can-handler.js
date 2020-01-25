@@ -29,6 +29,21 @@ function recieve()
   }
 }
 
+function send(header, msg_data){
+    msg = can.Message(arbitration_id=header, data= msg_data);
+
+//    msg = CANPort.Message(arbitration_id=msg_id, data= msg_data)
+
+    try{
+        bus.send(msg);
+        console.log("Message sent")
+    }
+    catch can.CanError{
+        console.log("Message NOT sent")
+    }
+}
+
+
 function init_connection(){
 
     platform = process.platform;
