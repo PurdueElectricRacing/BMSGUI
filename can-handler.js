@@ -54,50 +54,36 @@ function send(header, msg_data){
 
 function init_connection(){
 
+    port = null;
     platform = process.platform;
-    var found = false;
+
     if (platform.startsWith('win')){
 
-//      for (var i = 0; i<256; i++){
-//        ports.push(`COM${i + 1}`);
-//      }
         mcu_platform = '1155' //This is the vendor ID for the STM chip on the CANable. AKA this says that the device plugged in has 'a' STM chip. If a query with this doesn't find anything, there is likely a proprietary VID for the CANable that I can't find at this time. PID will also work by search.
-        var devs = await usb.find(vid = mcu_platform);
-        console.log(devs);
-        // search for the canable in the usb devices currently connected
-        for (var i = 0; i < devs.length; i++)
-        {
-            found = true;
-            port = devs[i];
-        }
 
-        if(!found){
-            return false;
-        }
+        port = await usb.find(vid = mcu_platform); //should only be one
+        //console.log(port);
     }
-    else if(platform.startsWith('darwin')){
+    else if(platform.startsWith('darwin')){ // Mac
       port = glob("/dev/tty.usbmodem*"); //only should be one.
     }
-    //  else if(platform.startsWith('linux') || platform.startsWith('cygwin')){
-//      ports = glob("/dev/tty[A-Za-z]*");
-//    }
     else{
-      console.log('Unsupported platform. (Get a Mac)');
+      console.log('Unsupported platform');
     }
 
-//    for (var i = 0; i < ports.length; i++){
-//      if (ports[i] !== null){
-//        port = ports[i];
-//      }
-//    }
-
-    console.log(port);
-    console.log(await CANPort.listSerialPorts());
-    let can = new CANPort(port);
-    can.open();
-    can.setBitRate(125000);
-    can.on('data', console.log);
-    console.log("Success");
+    if(port != null)
+    {
+        console.log(port);
+        console.log(await CANPort.listSerialPorts());
+        let can = new CANPort(port);
+        can.open();
+        can.setBitRate(125000);
+        can.on('data', console.log);
+        console.log("Success");
+    }
+    else{
+        console.log("fail");
+    }
 }
 
 module.exports = {
