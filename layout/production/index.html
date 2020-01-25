@@ -38,6 +38,9 @@
               <a href="index.html" class="site_title"><i class="fa fa-shield"></i> <span>BMS</span></a>
             </div>
 
+            <button onclick="js/init_connection()">Connect to BMS</button>
+
+
             <div class="clearfix"></div>
             <br />
 
@@ -156,8 +159,8 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <th scope="row">001</th>
-                      <td class="red">Slave inactive (3)</td>
+                      <th scope="row" id = 'Error_id_1'></th>
+                      <td class="red" id = Error_msg_1></td>
                     </tr>
                     <tr>
                       <th scope="row">023</th>
