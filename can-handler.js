@@ -65,10 +65,15 @@ function init_connection(){
         //console.log(port);
     }
     else if(platform.startsWith('darwin')){ // Mac
-      port = glob("/dev/tty.usbmodem*"); //only should be one.
+        ports = glob("/dev/tty*");
+        for(p : ports){
+            if(p.indexOf('modem') >= 0){
+                port = p
+            }
+        }
     }
     else{
-      console.log('Unsupported platform');
+        console.log('Unsupported platform');
     }
 
     if(port != null)
