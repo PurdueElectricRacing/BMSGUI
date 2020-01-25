@@ -56,16 +56,25 @@ function init_connection(){
     platform = process.platform;
 
     if (platform.startsWith('win')){
+        ports = glob("/dev/tty*");
+        for(p : ports){
+            if(p.indexOf('modem') >= 0){    //Code works 100% on MAC. Untested on windows but should work
+                port = p
+            }
+        }
 
-        mcu_platform = 0x05e3 //This is the vendor ID for the CANable.
-
-        port = await usb.find(vid = mcu_platform); //should only be one
+        //
+//        mcu_platform = 0x05e3 //This is a incorrect VID
+//
+//        port = await usb.find(vid = mcu_platform); //should only be one       //Commented out code won't work unless a VID/ PID for the CANable can be found.
         //console.log(port);
+
+
     }
     else if(platform.startsWith('darwin')){ // Mac
         ports = glob("/dev/tty*");
         for(p : ports){
-            if(p.indexOf('modem') >= 0){
+            if(p.indexOf('modem') >= 0){    //Code works 100% on MAC
                 port = p
             }
         }
