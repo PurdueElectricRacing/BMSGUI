@@ -59,7 +59,7 @@ function init_connection(){
 
     if (platform.startsWith('win')){
 
-        mcu_platform = '0x05e3' //This is the vendor ID for the CANable.
+        mcu_platform = 0x05e3 //This is the vendor ID for the CANable.
 
         port = await usb.find(vid = mcu_platform); //should only be one
         //console.log(port);
