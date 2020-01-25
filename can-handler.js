@@ -59,7 +59,7 @@ function init_connection(){
 
     if (platform.startsWith('win')){
 
-        mcu_platform = '1155' //This is the vendor ID for the STM chip on the CANable. AKA this says that the device plugged in has 'a' STM chip. If a query with this doesn't find anything, there is likely a proprietary VID for the CANable that I can't find at this time. PID will also work by search.
+        mcu_platform = '0x05e3' //This is the vendor ID for the CANable.
 
         port = await usb.find(vid = mcu_platform); //should only be one
         //console.log(port);
