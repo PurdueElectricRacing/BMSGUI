@@ -79,8 +79,6 @@ function init_connection(){
 //
 //        port = await usb.find(vid = mcu_platform); //should only be one       //Commented out code won't work unless a VID/ PID for the CANable can be found.
         //console.log(port);
-
-
     }
     else if(platform.startsWith('darwin')){ // Mac
         ports = glob("/dev/tty*");

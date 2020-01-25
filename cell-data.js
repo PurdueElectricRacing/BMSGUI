@@ -45,12 +45,20 @@ function parseMsg(header, data) {
 }
 
 function get_total_voltage() {
-    var nom_voltage = 0;
+    var tot_voltage = 0;
     for (var series_voltage in cells) {
-        nom_voltage += series_voltage;
+        tot_voltage += series_voltage;
     }
 
-    return nom_voltage;
+    document.getElementById('total_voltage').innerHTML = tot_voltage;
+
+    var charge_percent = 1 - (((4.2 - (tot_voltage/21))/10)/.17);   //Calculates battery %
+    document.getElementById('charge_percent').innerHTML = charge_percent;
+
+    //Full = 4.2V
+    // cutoff @ 2.5V
+
+
 }
 
 
