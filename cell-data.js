@@ -1,4 +1,4 @@
-var cells = {}
+var cells = {};
 
 function parseMsg(header, data) {
   switch (header)
@@ -6,7 +6,7 @@ function parseMsg(header, data) {
     case "volt_id":
         var row = data[1]
         var volt_reading = (data[3] + data[2] << 8)
-        cells[row] = volt_reading
+        cells[row] = volt_reading;
         return [row, volt_reading];
 
     case "temp_msg":
@@ -27,7 +27,7 @@ function parseMsg(header, data) {
         return error_msg_bank;
 
     default:
-        return "Message not recognised. Something is really fucked up because we should've already checked for this."
+        return "Message not recognised. Something is really fucked up because we should've already checked for this.";
   }
 
 function get_total_voltage() {

@@ -1,23 +1,44 @@
 const pytalk = require('pytalk');
 const electron = require('electron');
+const canable = require('./canable');
+const usb = require('usb-detection');
+const serial = require('serialport');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-const http = require('http');
+const CANport = canable.CANPort;
+const hand = require('./can-handler');
 
+usb.startMonitoring();
+hand.init_connection();
 
-http.createServer().listen(8008, 'localhost');
-
-var worker = pytalk.worker('./python_interface/communication.py');
-// var test = worker.method('test');
-var run = worker.method('run');
-
-
-
-worker.on('datarcv', (err, args) => 
+// @brief: find serial devices and return list of available ports
+async function initCanable() 
 {
-  console.log(args);
-});
+  var devs = await usb.find();
+  console.log(devs);
+  var canableport = -1;
+  // search for the canable in the usb devices currently connected
+  for (var i = 0; i < devs.length; i++)
+  {
+    if (devs[i].deviceName.indexOf('canable') >= 0)
+    {
+      canableport = devs[i].deviceAddress;
+      break;
+    }
+  }
+  //
+  if (canableport > -1)
+  {
+  }
+    
 
+  if (ports.length < 1)
+  {
+    return false;
+  }
+  
+  return ports;
+}
 
 function createWindow()
 {
@@ -31,14 +52,8 @@ function createWindow()
     }
   );
   winder.loadFile('index.html');
+
 }
 
-// app.on('ready', createWindow);
-run((err, ret) => {
-  console.log('running');
-});
-
-// test('this some garbage yo', (err, retgarbage) => 
-// {
-//   console.log(retgarbage);
-// });
+app.on('session-created', initCanable);
+app.on('ready', createWindow);
