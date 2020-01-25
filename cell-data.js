@@ -5,26 +5,25 @@ function parseMsg(header, data) {
   switch (header)
   {
     case "volt_id":
+
         var row = data[1]
+        var table_access = document.getElementById("cell_info_table").rows[row].cells;    // accesses HTML table
         var volt_reading = (data[3] + data[2] << 8)
-        cells[row] = volt_reading;
 
         rstring = ''
-        for row in cells:
-            rstring.concat('Row ' + row + ': ' + cells[row] + 'V --- ');
+        rstring.concat('Row ' + row + ': ' + volt_reading + 'V');
 
-        document.getElementById('voltage_readings').innerHTML = rstring;
+        table_access[0].innerHTML = rstring;            // updates value in html table
         break;
 
     case "temp_msg":
         var row = data[1]
+        var table_access = document.getElementById("cell_info_table").rows[row].cells;
         var temp_reading = (data[3] + data[2] << 8)
 
         rstring = ''
-        for row in temps:
-            rstring.concat('Row ' + row + ': ' + temps[row] + 'degrees freedomheit --- ');
-
-        document.getElementById('temp_readings').innerHTML = rstring;
+        rstring.concat(temp_reading + ' degrees freedomheit');
+        table_access[1].innerHTML = rstring;
         break;
 
     case "error_msg":

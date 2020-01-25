@@ -18,6 +18,17 @@ var known_messages = {'0x605': 'volt_id',
 usb.startMonitoring();
 hand.init_connection();
 
+function init_tables()
+{
+    var table = document.getElementById('cell_info_table');
+    for (var r = 0, n = 20; r <= n; r++) {
+        table.insertRow(r);                                 //Init cell voltage & temp table
+        for (var c = 0, m = 2; c <= m; c++) {
+            table.rows[r].insertCell(c)
+        }
+    }
+}
+
 function recieve()
 {
   while(true)
