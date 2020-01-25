@@ -46,45 +46,6 @@ async function initCanable()
 //}
 
 
-
-
-function init_connection(){
-
-    platform = process.platform;
-    var ports = [];
-
-    if (platform.startsWith('win')){
-
-      for (var i = 0; i<256; i++){
-        ports.push(`COM${i + 1}`);
-      }
-    }
-    else if(platform.startsWith('linux') || platform.startsWith('cygwin')){
-      ports = glob("/dev/tty[A-Za-z]*");
-    }
-    else if(platform.startsWith('darwin')){
-      ports = glob("/dev/tty.usbmodem*");
-    }
-
-
-    else{
-      console.log('Unsupported platform');
-    }
-
-//    for (var i = 0; i < ports.length; i++){
-//      if (ports[i] !== null){
-//        port = ports[i];
-//      }
-//    }
-
-    console.log(ports);
-//      console.log(await CANPort.listSerialPorts());
-    // let can = new CANPort(port);
-    // can.open();
-    // can.setBitRate(125000);
-    // can.on('data', console.log);
-}
-
 function createWindow()
 {
   winder = new BrowserWindow(
