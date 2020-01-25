@@ -61,7 +61,7 @@ function init_connection(){
 //      for (var i = 0; i<256; i++){
 //        ports.push(`COM${i + 1}`);
 //      }
-        mcu_platform = 'STM32F042C6T6' //This is the vendor ID for the chip on the CANable. If a query with this doesn't find anything, there is likely a proprietary VID for the CANable that I can't find at this time. PID will also work by search.
+        mcu_platform = '1155' //This is the vendor ID for the STM chip on the CANable. AKA this says that the device plugged in has 'a' STM chip. If a query with this doesn't find anything, there is likely a proprietary VID for the CANable that I can't find at this time. PID will also work by search.
         var devs = await usb.find(vid = mcu_platform);
         console.log(devs);
         // search for the canable in the usb devices currently connected
@@ -82,7 +82,7 @@ function init_connection(){
 //      ports = glob("/dev/tty[A-Za-z]*");
 //    }
     else{
-      console.log('Unsupported platform. Get a Mac.');
+      console.log('Unsupported platform. (Get a Mac)');
     }
 
 //    for (var i = 0; i < ports.length; i++){
@@ -97,7 +97,7 @@ function init_connection(){
     can.open();
     can.setBitRate(125000);
     can.on('data', console.log);
-    console.log("Succ-sess");
+    console.log("Success");
 }
 
 module.exports = {
