@@ -64,19 +64,19 @@ def run():
 
 
 # @pytalk_method('send')
-# def send(msg_id, msg_data):
-#     bus = socketcan.SocketCanDev(findPort())
-#     # bus = can.interface.Bus()
+def send(msg_id, msg_data):
+    bus = socketcan.SocketCanDev(findPort())
+    # bus = can.interface.Bus()
 
-#     msg = can.Message(arbitration_id=msg_id,
-#                       data= msg_data,    #example
-#                              )
+    msg = can.Message(arbitration_id=msg_id,
+                      data= msg_data,    #example
+                             )
 
-#     try:
-#         bus.send(msg)
-#         print("Message sent")
-#     except can.CanError:
-#         print("Message NOT sent")
+    try:
+        bus.send(msg)
+        print("Message sent")
+    except can.CanError:
+        print("Message NOT sent")
 
 
 # @pytalk_method('test')

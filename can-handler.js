@@ -27,6 +27,19 @@ function recieve(){
     }
 }
 
+function send(header, msg_data){
+    msg = can.Message(arbitration_id=header, data= msg_data);
+
+//    msg = CANPort.Message(arbitration_id=msg_id, data= msg_data)
+
+    try{
+        bus.send(msg);
+        console.log("Message sent")
+    }
+    catch can.CanError{
+        console.log("Message NOT sent")
+    }
+}
 
 
 function init_connection(){
@@ -40,7 +53,7 @@ function init_connection(){
                 ports.push('COM%s' % (i + 1))
             }
         }
-        else if platform.startsWith('linux') or platform.startsWith('cygwin'){
+        else if platform.startsWith('linux') || platform.startsWith('cygwin'){
             ports = glob("/dev/tty[A-Za-z]*");
         }
         else if platform.startsWith('darwin'){
@@ -57,7 +70,6 @@ function init_connection(){
         }
 
 
-//      console.log(await CANPort.listSerialPorts());
         let can = new CANPort(port);
         can.open();
         can.setBitRate(125000);
