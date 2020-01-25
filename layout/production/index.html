@@ -38,7 +38,7 @@
               <a href="index.html" class="site_title"><i class="fa fa-shield"></i> <span>BMS</span></a>
             </div>
 
-<!--            <button onclick="js/init_connection()">Connect to BMS</button>-->
+            <button onclick="js/can-handler/init_connection()">Connect to BMS</button>
 
 
             <div class="clearfix"></div>
@@ -111,29 +111,9 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <th scope="row">0</th>
-                      <td class="green">4.0 V</td>
-                      <td class="red">84 deg</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td class="green">4.1 V</td>
-                      <td>N/A</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td class="green">4.0 V</td>
-                      <td>N/A</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td class="green">4.0 V</td>
-                      <td>N/A</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">4</th>
-                      <td class="green">4.0 V</td>
-                      <td class="red">85 deg</td>
+<!--                                                                        Display voltage & temp readings-->
+                      <th scope="row" id = 'voltage_readings'></th>
+                      <td class="red" id = 'temp_readings'></td>
                     </tr>
                   </tbody>
                 </table>
@@ -159,16 +139,7 @@
                   </thead>
                   <tbody>
                     <tr>
-<!--                      <th scope="row" id = 'Error_id_1'></th>-->
-<!--                      <td class="red" id = Error_msg_1></td>-->
-                    </tr>
-                    <tr>
-                      <th scope="row">023</th>
-                      <td class="red">Charge fault</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">016</th>
-                      <td class="red">Low cell</td>
+                      <td class="red" id = 'error_msgs'></td>
                     </tr>
                   </tbody>
                 </table>

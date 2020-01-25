@@ -1,4 +1,3 @@
-//const SerialPort = require('serialport')   INCL. in CANPort
 let CANPort = require('./canable').CANPort;
 const electron = require('electron');
 const canable = require('./canable');
@@ -28,8 +27,7 @@ function recieve()
     var data = message.data();
 
     if (known_messages.indexOf(id) >= 0){
-        return (id, data);
-
+        parseMsg(id, data);
     }
     else{
         console.log('message unknown');
