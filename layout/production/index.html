@@ -38,12 +38,10 @@
               <a href="index.html" class="site_title"><i class="fa fa-shield"></i> <span>BMS</span></a>
             </div>
 
-            <button onclick="js/can-handler/init_connection()">Connect to BMS</button>
-
-
+            <button onclick="js/can-handler/init_connection()">Connect to BMS</button>    <!--   connect to BMS on button press  -->
             <div class="clearfix"></div>
             <br />
-
+f
             <!-- sidebar menu -->
             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
               <div class="menu_section">
@@ -66,30 +64,30 @@
           <div class="row tile_count">
             <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
               <span class="count_top"><i class="fa fa-user"></i> Pack Voltage</span>
-              <div class="count", id = "total_voltage"></div>
-              <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12 volts</i> Previous 10 minutes</span>
+              <div class="count", id = "total_voltage"></div> <!--                display tot voltage -->
+<!--              <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12 volts</i> Previous 10 minutes</span>-->
             </div>
             <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
               <span class="count_top"><i class="fa fa-user"></i> State of Charge</span>
               <div class="count red" id = "charge_percent"></div>
-              <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>4%</i> Previous 10 minutes</span>
+<!--              <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>4%</i> Previous 10 minutes</span>-->
             </div>
-            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-clock-o"></i> State of Health</span>
-              <div class="count red">93%</div>
-              <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>0.4% </i> Previous 10 hours</span>
-            </div>
+<!--            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">-->
+<!--              <span class="count_top"><i class="fa fa-clock-o"></i> State of Health</span>-->
+<!--              <div class="count red">93%</div>-->
+<!--              <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>0.4% </i> Previous 10 hours</span>-->
+<!--            </div>-->
             <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
               <span class="count_top"><i class="fa fa-user"></i> Cell Delta</span>
-              <div class="count green">0.2 Volts</div>
+              <div class="count green" id = "cell_delta"></div>
               <span class="count_bottom"><i class="green"><i class="fa fa-sort-desc"></i>0.1 volts </i> Previous 10 minutes</span>
             </div>
-            
-            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Pack Temperature</span>
-              <div class="count red">90 deg</div>
-              <span class="count_bottom"><i class="red"><i class="fa fa-sort-asc"></i>5 deg</i> Previous 10 minutes</span>
-            </div>
+
+<!--            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">-->
+<!--              <span class="count_top"><i class="fa fa-user"></i> Pack Temperature</span>-->
+<!--              <div class="count red">90 deg</div>-->
+<!--              <span class="count_bottom"><i class="red"><i class="fa fa-sort-asc"></i>5 deg</i> Previous 10 minutes</span>-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;        RESERVED FOR TOTAL PACK TEMP-->
           </div>
           <!-- /top tiles -->
 
@@ -109,16 +107,15 @@
                       <th>Thermistor Temp</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-<!--                <th scope="row" id = 'voltage_readings'></th>-->
-<!--                <td class="red" id = 'temp_readings'></td>-->
-                    <tr></tr>
+<!--                  <tbody>-->
+<!--                    <tr>-->
+<!--&lt;!&ndash;                <th scope="row" id = 'voltage_readings'></th>&ndash;&gt;-->
+<!--&lt;!&ndash;                <td class="red" id = 'temp_readings'></td>&ndash;&gt;-->
+<!--                    <tr></tr>-->
 
-                    </tr>
-                  </tbody>
+<!--                    </tr>-->
+<!--                  </tbody>-->
                 </table>
-
               </div>
             </div>
           </div>
@@ -131,18 +128,13 @@
               </div>
               <div class="x_content">
 
-                <table class="table table-bordered">
+                <table class="table table-bordered", id = 'error_msg_table'>
                   <thead>
                     <tr>
                       <th>Fault</th>
-                      <th>Description</th>
+<!--                      <th>Description</th>-->
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td class="red" id = 'error_msgs'></td>
-                    </tr>
-                  </tbody>
                 </table>
 
               </div>

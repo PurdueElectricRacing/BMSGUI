@@ -27,18 +27,33 @@ function init_tables()
             table.rows[r].insertCell(c)
         }
     }
+
+
 }
 
-function recieve()
+function receive()
 {
   while(true)
   {
     var message = can.recv();
     var id = message.id();
-    var data = message.data();
+    var data = message.data();  //Is recieved as an array through the canable pkg
 
     if (known_messages.indexOf(id) >= 0){
         parseMsg(id, data);
+
+
+        var table = document.getElementById('can_message_bank');
+        table.insertRow(error_msg_names[byte]);
+        var single_row_access = document.getElementById("cell_info_table").rows[row].cells;
+
+        var i = 0;
+        for(byte: data)
+        {
+            single_row_access.insertCell(i);
+            single_row_access[i].innerHTML = byte;
+        }
+
     }
     else{
         console.log('message unknown');
@@ -46,10 +61,19 @@ function recieve()
   }
 }
 
-function send(header, msg_data){
-    msg = can.Message(arbitration_id=header, data= msg_data);
+function send_message()
+{
+    var id = document.getElementById("frame_id").value;
+    var msg_data = document.getElementById("message").value;
+    var e_id = document.getElementById("extended_id").value;
 
-//    msg = CANPort.Message(arbitration_id=msg_id, data= msg_data)
+
+//    id = "frame_id"
+//    id = "length"
+//    id = "message"
+//    id = "extended_id"
+    msg = cans.Message(arbitration_id=id, data= msg_data, is_extended_id = e_id);
+
 
     try{
         bus.send(msg);
