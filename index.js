@@ -1,5 +1,4 @@
 import {init_connection} from "./can-handler";
-
 const electron = require('electron');
 const canable = require('./canable');
 const usb = require('usb-detection');
@@ -13,7 +12,7 @@ const hand = require('./can-handler');
 usb.startMonitoring();
 hand.init_connection();
 
-var glob = require("glob");
+const glob = require("glob");
 
 
 // @brief: find serial devices and return list of available ports
@@ -24,15 +23,15 @@ async function initCanable()
 
 function createWindow()
 {
-  winder = new BrowserWindow(
-    {
-      width: 800,
-      height: 600,
-      webPreferences: {
-        nodeIntegration: true
-      }
-    }
-  );
+    let winder = new BrowserWindow(
+        {
+            width: 800,
+            height: 600,
+            webPreferences: {
+                nodeIntegration: true
+            }
+        }
+    );
   winder.loadFile('./layout/production/index.html');
 
 }
