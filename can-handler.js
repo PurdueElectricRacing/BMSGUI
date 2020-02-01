@@ -43,10 +43,7 @@ function receive()
         parseMsg(id, data);
 
         const table = document.getElementById('can_message_bank');
-        table.insertRow(0);
-        // table.insertRow(error_msg_names[byte]);
-
-        const single_row_access = document.getElementById("cell_info_table").rows[row].cells;
+        const single_row_access = table.insertRow(0);
 
         const i = 0;
         for(let byte in data)
