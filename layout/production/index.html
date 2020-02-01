@@ -95,11 +95,12 @@
             <div class="x_panel">
               <div class="x_title">
                 <h2>Cell Data <small>Individual cell voltages and thermistor temperatures</small></h2>
+<!--                cell data in table dynamically updated in cell-data.js (initialized in can-handler.js)-->
                 <div class="clearfix"></div>
               </div>
               <div class="x_content">
 
-                <table class="table table-bordered" id = 'cell_info_table'>
+                <table id = "cell_info_table" class="table table-bordered">
                   <thead>
                     <tr>
                       <th>Cell Index</th>
@@ -107,14 +108,6 @@
                       <th>Thermistor Temp</th>
                     </tr>
                   </thead>
-<!--                  <tbody>-->
-<!--                    <tr>-->
-<!--&lt;!&ndash;                <th scope="row" id = 'voltage_readings'></th>&ndash;&gt;-->
-<!--&lt;!&ndash;                <td class="red" id = 'temp_readings'></td>&ndash;&gt;-->
-<!--                    <tr></tr>-->
-
-<!--                    </tr>-->
-<!--                  </tbody>-->
                 </table>
               </div>
             </div>

@@ -38,7 +38,7 @@ function parseMsg(header, data) {
         }
 
         for (const byte in data){
-            if(byte == 0 && byte <= 5)
+            if(byte === '0')
             {
              table.insertRow(error_msg_names[byte]);
             }
@@ -73,7 +73,7 @@ function get_total_voltage()
         {
             largest = series_voltage;
         }
-        if(smallest == 0)
+        if(smallest === 0)
         {
             smallest = series_voltage
         }
