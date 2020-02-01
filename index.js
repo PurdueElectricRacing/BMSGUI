@@ -1,3 +1,5 @@
+import {init_connection} from "./can-handler";
+
 const electron = require('electron');
 const canable = require('./canable');
 const usb = require('usb-detection');

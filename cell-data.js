@@ -6,35 +6,36 @@ function parseMsg(header, data) {
   {
     case "volt_id":
 
-        var row = data[1];
-        var table_access = document.getElementById("cell_info_table").rows[row].cells;    // accesses HTML table
-        var volt_reading = (data[3] + data[2] << 8);
+        let row = data[1];
+        const table_access = document.getElementById("cell_info_table").rows[row].cells;    // accesses HTML table
+        const volt_reading = (data[3] + data[2] << 8);
 
-        rstring = '';
+        let rstring = '';
         rstring.concat('Row ' + row + ': ' + volt_reading + 'V');
 
         table_access[0].innerHTML = rstring;            // updates value in html table
         break;
 
     case "temp_msg":
-        var row = data[1];
-        var single_row_access = document.getElementById("cell_info_table").rows[row].cells;
-        var temp_reading = (data[3] + data[2] << 8);
+        row = data[1];
+        const single_row_access = document.getElementById("cell_info_table").rows[row].cells;
+        const temp_reading = (data[3] + data[2] << 8);
 
         rstring = '';
         rstring.concat(temp_reading + ' degrees freedomheit');
         single_row_access[1].innerHTML = rstring;
+        get_total_voltage();
         break;
 
     case "error_msg":
-        var table = document.getElementById('error_msg_table');
-        error_msg_names = ['COC', 'DOC', 'Overvolt', 'Undervolt', 'Overtemp', 'Undertemp'];
+        const table = document.getElementById('error_msg_table');
+        let error_msg_names = ['COC', 'DOC', 'Overvolt', 'Undervolt', 'Overtemp', 'Undertemp'];
         for (i=0; i<table.length; i++)
         {
-            table.delete_row(i) //Clear all rows b4 repopulation
+            table.deleteRow(i) //Clear all rows b4 repopulation
         }
 
-        for (var byte in data){
+        for (const byte in data){
             if(byte == 0)
             {
              table.insertRow(error_msg_names[byte]);
@@ -50,9 +51,9 @@ function parseMsg(header, data) {
 
 function get_total_voltage()
 {
-    var tot_voltage = 0;
-    largest = 0;
-    smallest = 0;
+    let tot_voltage = 0;
+    let largest = 0;
+    let smallest = 0;
     for (var series_voltage in cells)
     {
         tot_voltage += series_voltage;
@@ -70,11 +71,12 @@ function get_total_voltage()
         }
     }
 
-    document.getElementById('cell_delta').innerHTML = largest - smallest;
-    document.getElementById('total_voltage').innerHTML = tot_voltage;
+    const delta = largest-smallest;
+    document.getElementById('cell_delta').innerHTML = delta.toString();
+    document.getElementById('total_voltage').innerHTML = tot_voltage.toString();
 
-    var charge_percent = 1 - (((4.2 - (tot_voltage/21))/10)/.17);   //Calculates battery %
-    document.getElementById('charge_percent').innerHTML = charge_percent;
+    const charge_percent = 1 - (((4.2 - (tot_voltage / 21)) / 10) / .17);   //Calculates battery %
+    document.getElementById('charge_percent').innerHTML = charge_percent.toString();
 
     //Full = 4.2V
     // cutoff @ 2.5V

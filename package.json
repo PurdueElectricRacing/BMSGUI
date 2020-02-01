@@ -24,10 +24,12 @@
     "cap": "^0.2.1",
     "serialport": "^8.0.7",
     "electron": "^7.1.11",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "glob": "latest"
   },
   "devDependencies": {
     "electron-rebuild": "^1.9.0",
-    "node-gyp": "^6.1.0"
+    "node-gyp": "^6.1.0",
+    "usb-detection": "^4.7.0"
   }
 }

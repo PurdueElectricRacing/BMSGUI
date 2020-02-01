@@ -4,25 +4,28 @@ const canable = require('./canable');
 const serial = require('serialport');
 
 
-var can;
-var port;
-var glob = require("glob");
+let can;
+let port;
+const glob = require("glob");
 
-var known_messages = {'0x605': 'volt_id',
-'0x606': 'temp_msg',
-'0x608': 'resistance_msg',
-'0x609': 'error_msg'
+const known_messages = {
+    '0x605': 'volt_id',
+    '0x606': 'temp_msg',
+    '0x608': 'resistance_msg',
+    '0x609': 'error_msg'
 };
 
 usb.startMonitoring();
-hand.init_connection();
+init_connection();
 
 function init_tables()
 {
-    var table = document.getElementById('cell_info_table');
-    for (var r = 0, n = 20; r <= n; r++) {
+    const table = document.getElementById('cell_info_table');
+    let r = 0, n = 20;
+    for (; r <= n; r++) {
         table.insertRow(r);                                 //Init cell voltage & temp table
-        for (var c = 0, m = 2; c <= m; c++) {
+        let c = 0, m = 2;
+        for (; c <= m; c++) {
             table.rows[r].insertCell(c)
         }
     }
@@ -30,23 +33,23 @@ function init_tables()
 
 function receive()
 {
-  while(true)
+  while(1)
   {
-    var message = can.recv();
-    var id = message.id();
-    var data = message.data();  //Is recieved as an array through the canable pkg
+      const message = can.recv();
+      const id = message.id();
+      const data = message.data();  //Is recieved as an array through the canable pkg
 
     if (known_messages.indexOf(id) >= 0){
         parseMsg(id, data);
 
-        var table = document.getElementById('can_message_bank');
-        table.insertRow[0](error_msg_names[byte]);
-        table.insertRow(error_msg_names[byte]);
+        const table = document.getElementById('can_message_bank');
+        table.insertRow(0);
+        // table.insertRow(error_msg_names[byte]);
 
-        var single_row_access = document.getElementById("cell_info_table").rows[row].cells;
+        const single_row_access = document.getElementById("cell_info_table").rows[row].cells;
 
-        var i = 0;
-        for(byte: data)
+        const i = 0;
+        for(let byte in data)
         {
             single_row_access.insertCell(i);
             single_row_access[i].innerHTML = byte;
@@ -60,20 +63,20 @@ function receive()
 
 function send_message()
 {
-    var id = document.getElementById("frame_id").value;
-    var msg_data = document.getElementById("message").value;
-    var e_id = document.getElementById("extended_id").value;
+    const id = document.getElementById("frame_id").value;
+    const msg_data = document.getElementById("message").value;
+    const e_id = document.getElementById("extended_id").value;
 
 
 //    id = "frame_id"
 //    id = "length"
 //    id = "message"
 //    id = "extended_id"
-    msg = cans.Message(arbitration_id=id, data= msg_data, is_extended_id = e_id);
+    let msg = can.Message(arbitration_id = id, data = msg_data, is_extended_id = e_id);
 
 
     try{
-        bus.send(msg);
+        can.send(msg);
         console.log("Message sent")
     }
     catch can.CanError{
@@ -82,15 +85,15 @@ function send_message()
 }
 
 
-function init_connection(){
+async function init_connection() {
 
     port = null;
-    platform = process.platform;
+    let platform = process.platform;
 
-    if (platform.startsWith('win')){
+    if (platform.startsWith('win')) {
         ports = glob("/dev/tty*");
-        for(p : ports){
-            if(p.indexOf('modem') >= 0){    //Code works 100% on MAC. Untested on windows but should work
+        for (let p in ports) {
+            if (p.indexOf('modem') >= 0) {    //Code works 100% on MAC. Untested on windows but should work
                 port = p
             }
         }
@@ -100,22 +103,20 @@ function init_connection(){
 //
 //        port = await usb.find(vid = mcu_platform); //should only be one       //Commented out code won't work unless a VID/ PID for the CANable can be found.
         //console.log(port);
-    }
-    else if(platform.startsWith('darwin')){ // Mac
+    } else let ports;
+    let ports;
+    if (platform.startsWith('darwin')) { // Mac
         ports = glob("/dev/tty*");
-        for(p : ports){
-            if(p.indexOf('modem') >= 0){    //Code works 100% on MAC
+        for (let p in ports) {
+            if (p.indexOf('modem') >= 0) {    //Code works 100% on MAC
                 port = p
             }
         }
-    }
-    else
-    {
+    } else {
         console.log('Unsupported platform');
     }
 
-    if(port != null)
-    {
+    if (port != null) {
         console.log(port);
         console.log(await CANPort.listSerialPorts());
         let can = new CANPort(port);
@@ -123,10 +124,12 @@ function init_connection(){
         can.setBitRate(125000);
         can.on('data', console.log);
         console.log("Success");
-    }
-    else{
+    } else {
         console.log("fail");
     }
+
+    init_tables();
+    receive();
 }
 
 module.exports = {
