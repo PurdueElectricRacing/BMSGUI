@@ -1,27 +1,29 @@
 cells = {};
 temps = {};
+const startTime = new Date();
+let prev_volts = 0;
+let prev_delta = 0;
+let prev_charge = 0;
 
 function parseMsg(header, data) {
+  let row = data[1];
+  let rstring = '';
   switch (header)
   {
     case "volt_id":
 
-        let row = data[1];
         const table_access = document.getElementById("cell_info_table").rows[row].cells;    // accesses HTML table
         const volt_reading = (data[3] + data[2] << 8);
 
-        let rstring = '';
         rstring.concat('Row ' + row + ': ' + volt_reading + 'V');
 
         table_access[0].innerHTML = rstring;            // updates value in html table
         break;
 
     case "temp_msg":
-        row = data[1];
         const single_row_access = document.getElementById("cell_info_table").rows[row].cells;
         const temp_reading = (data[3] + data[2] << 8);
 
-        rstring = '';
         rstring.concat(temp_reading + ' degrees freedomheit');
         single_row_access[1].innerHTML = rstring;
         get_total_voltage();
@@ -36,7 +38,7 @@ function parseMsg(header, data) {
         }
 
         for (const byte in data){
-            if(byte == 0)
+            if(byte == 0 && byte <= 5)
             {
              table.insertRow(error_msg_names[byte]);
             }
@@ -51,6 +53,10 @@ function parseMsg(header, data) {
 
 function get_total_voltage()
 {
+    let endTime = new Date();
+    let timeDiff = endTime - startTime; //in ms
+    // strip the ms
+    timeDiff /= 60000;
     let tot_voltage = 0;
     let largest = 0;
     let smallest = 0;
@@ -72,11 +78,19 @@ function get_total_voltage()
     }
 
     const delta = largest-smallest;
+    const total_delta_span = delta-prev_delta;
     document.getElementById('cell_delta').innerHTML = delta.toString();
+    prev_delta = delta;
+    document.getElementById('cell_delta_span').innerHTML = total_delta_span.toString();
+    const tot_voltage_span = tot_voltage-prev_volts;
     document.getElementById('total_voltage').innerHTML = tot_voltage.toString();
-
+    prev_volts = tot_voltage;
+    document.getElementById('total_voltage_span').innerHTML = tot_voltage_span.toString();
     const charge_percent = 1 - (((4.2 - (tot_voltage / 21)) / 10) / .17);   //Calculates battery %
+    const charge_percent_delta = charge_percent-prev_charge;
+    prev_charge = charge_percent;
     document.getElementById('charge_percent').innerHTML = charge_percent.toString();
+    document.getElementById('charge_percent_delta').innerHTML = charge_percent_delta.toString();
 
     //Full = 4.2V
     // cutoff @ 2.5V
