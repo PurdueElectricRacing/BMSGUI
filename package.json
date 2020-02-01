@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron .",
-    "install": "electron-rebuild",
-    "winrebuild": ".\\node_modules\\.bin\\electron-rebuild.cmd"
+    "start": "electron ."
   },
   "repository": {
     "type": "git",
@@ -24,10 +22,9 @@
     "bootstrap": "^4.4.1",
     "canable": "^1.0.0",
     "cap": "^0.2.1",
-    "electron": "^7.1.10",
-    "serialport": "^8.0.6",
-    "socket.io": "^2.3.0",
-    "usb-detection": "^4.7.0"
+    "serialport": "^8.0.7",
+    "electron": "^7.1.11",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "electron-rebuild": "^1.9.0",

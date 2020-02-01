@@ -1,7 +1,6 @@
 let CANPort = require('./canable').CANPort;
 const electron = require('electron');
 const canable = require('./canable');
-const usb = require('usb-detection');
 const serial = require('serialport');
 
 
@@ -27,8 +26,6 @@ function init_tables()
             table.rows[r].insertCell(c)
         }
     }
-
-
 }
 
 function receive()
@@ -42,9 +39,10 @@ function receive()
     if (known_messages.indexOf(id) >= 0){
         parseMsg(id, data);
 
-
         var table = document.getElementById('can_message_bank');
+        table.insertRow[0](error_msg_names[byte]);
         table.insertRow(error_msg_names[byte]);
+
         var single_row_access = document.getElementById("cell_info_table").rows[row].cells;
 
         var i = 0;
@@ -53,7 +51,6 @@ function receive()
             single_row_access.insertCell(i);
             single_row_access[i].innerHTML = byte;
         }
-
     }
     else{
         console.log('message unknown');
@@ -112,7 +109,8 @@ function init_connection(){
             }
         }
     }
-    else{
+    else
+    {
         console.log('Unsupported platform');
     }
 

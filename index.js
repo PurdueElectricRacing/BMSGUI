@@ -31,7 +31,7 @@ function createWindow()
       }
     }
   );
-  winder.loadFile('index.html');
+  winder.loadFile('./layout/production/index.html');
 
 }
 
