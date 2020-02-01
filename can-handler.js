@@ -79,7 +79,7 @@ function send_message()
         can.send(msg);
         console.log("Message sent")
     }
-    catch can.CanError{
+    catch {
         console.log("Message NOT sent")
     }
 }
