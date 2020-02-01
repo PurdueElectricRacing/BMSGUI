@@ -1,6 +1,6 @@
 cells = {};
 temps = {};
-const startTime = new Date();
+let startTime = new Date();
 let prev_volts = 0;
 let prev_delta = 0;
 let prev_charge = 0;
@@ -53,10 +53,16 @@ function parseMsg(header, data) {
 
 function get_total_voltage()
 {
+    let delta_update = false;
     let endTime = new Date();
     let timeDiff = endTime - startTime; //in ms
     // strip the ms
     timeDiff /= 60000;
+    if(timeDiff >= 10)
+    {
+        delta_update = true;
+        startTime = new Date()
+    }
     let tot_voltage = 0;
     let largest = 0;
     let smallest = 0;
@@ -76,21 +82,28 @@ function get_total_voltage()
             smallest = series_voltage;
         }
     }
-
     const delta = largest-smallest;
-    const total_delta_span = delta-prev_delta;
-    document.getElementById('cell_delta').innerHTML = delta.toString();
-    prev_delta = delta;
-    document.getElementById('cell_delta_span').innerHTML = total_delta_span.toString();
-    const tot_voltage_span = tot_voltage-prev_volts;
-    document.getElementById('total_voltage').innerHTML = tot_voltage.toString();
-    prev_volts = tot_voltage;
-    document.getElementById('total_voltage_span').innerHTML = tot_voltage_span.toString();
     const charge_percent = 1 - (((4.2 - (tot_voltage / 21)) / 10) / .17);   //Calculates battery %
-    const charge_percent_delta = charge_percent-prev_charge;
-    prev_charge = charge_percent;
+
+    document.getElementById('cell_delta').innerHTML = delta.toString();
+    document.getElementById('total_voltage').innerHTML = tot_voltage.toString();
     document.getElementById('charge_percent').innerHTML = charge_percent.toString();
-    document.getElementById('charge_percent_delta').innerHTML = charge_percent_delta.toString();
+
+
+    if(delta_update)
+    {
+        const total_delta_span = delta-prev_delta;
+        prev_delta = delta;
+        document.getElementById('cell_delta_span').innerHTML = total_delta_span.toString();
+
+        const tot_voltage_span = tot_voltage-prev_volts;
+        prev_volts = tot_voltage;
+        document.getElementById('total_voltage_span').innerHTML = tot_voltage_span.toString();
+
+        const charge_percent_delta = charge_percent-prev_charge;
+        prev_charge = charge_percent;
+        document.getElementById('charge_percent_delta').innerHTML = charge_percent_delta.toString();
+    }
 
     //Full = 4.2V
     // cutoff @ 2.5V
