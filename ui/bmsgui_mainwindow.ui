@@ -6,15 +6,336 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>978</width>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>BMSGUI_MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar"/>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>2000</width>
+      <height>621</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>2000</width>
+      <height>621</height>
+     </size>
+    </property>
+    <property name="tabShape">
+     <enum>QTabWidget::Rounded</enum>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>16</width>
+      <height>16</height>
+     </size>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Mod Status</string>
+     </attribute>
+     <widget class="QComboBox" name="batteryStatusDropdown1">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>Module 1</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>Module 1</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Module 2</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Module 3</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QComboBox" name="batteryStatusDropdown2">
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>80</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>Module 2</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="batteryStatusDropdown3">
+      <property name="geometry">
+       <rect>
+        <x>680</x>
+        <y>80</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>Module 3</string>
+      </property>
+     </widget>
+     <widget class="Line" name="line">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>10</y>
+        <width>20</width>
+        <height>591</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+     <widget class="Line" name="line_2">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>10</y>
+        <width>20</width>
+        <height>581</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="voltageCheckbox">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>81</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Voltage</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="tempsCheckbox">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>40</y>
+        <width>81</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Temps</string>
+      </property>
+     </widget>
+     <widget class="Line" name="line_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>110</y>
+        <width>981</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="batteryCellChart1">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>160</y>
+        <width>251</width>
+        <height>291</height>
+       </rect>
+      </property>
+      <property name="rowCount">
+       <number>7</number>
+      </property>
+      <property name="columnCount">
+       <number>3</number>
+      </property>
+      <attribute name="horizontalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>50</number>
+      </attribute>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>80</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>40</number>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>40</number>
+      </attribute>
+      <attribute name="verticalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <column>
+       <property name="text">
+        <string>New Column</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>New Column</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>New Column</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QTableWidget" name="batteryCellChart2">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>160</y>
+        <width>251</width>
+        <height>291</height>
+       </rect>
+      </property>
+      <property name="rowCount">
+       <number>7</number>
+      </property>
+      <property name="columnCount">
+       <number>3</number>
+      </property>
+      <attribute name="horizontalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="horizontalHeaderMinimumSectionSize">
+       <number>50</number>
+      </attribute>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>80</number>
+      </attribute>
+      <attribute name="horizontalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="verticalHeaderMinimumSectionSize">
+       <number>40</number>
+      </attribute>
+      <attribute name="verticalHeaderDefaultSectionSize">
+       <number>40</number>
+      </attribute>
+      <attribute name="verticalHeaderHighlightSections">
+       <bool>false</bool>
+      </attribute>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <column>
+       <property name="text">
+        <string>New Column</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>New Column</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>New Column</string>
+       </property>
+      </column>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>EC Mod</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Debug</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_4">
+     <attribute name="title">
+      <string>Faults</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_5">
+     <attribute name="title">
+      <string>Master</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_6">
+     <attribute name="title">
+      <string>Plot</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_7">
+     <attribute name="title">
+      <string>Settings</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_8">
+     <attribute name="title">
+      <string>Mod Health</string>
+     </attribute>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>978</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
